@@ -1,0 +1,35 @@
+git init make a directory a git repos
+
+git status
+git add .    (or git add filename(s)) to stage in cache
+git rm --cached filenames   to unstage
+git commit -m "message"
+git log
+
+every time you do a commit the files staged in the cache to be committed are fluted. Once changes are made to files, they need to be restaged
+
+git diff look at unstaged changes
+git diff --cached look at staged changes
+
+
+git log --oneline
+
+shortcuts:
+git commit -a -m "message"   add and commit
+git status -s show files that have been modified
+
+remote:
+git remote add origin git@github.com:npetraco/sip.git    to tell local git where to push out the project to (the remote repos)
+
+git push origin master   upload local repos to remote
+
+If the following error is encountered:
+error master -> master (non-fast-forward)
+
+local and remote repos out of sync. Error message will probably tell you to do a pull. Execute:
+git pull origin master
+git add -A
+git commit -m "modified code"
+git push origin master
+
+xxx

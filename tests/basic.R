@@ -1,4 +1,4 @@
 library(sip)
 
 np<-CreateSmlieNetwork()
-np<-AddNode(np, "SUCCESS", "CHANCE", c("sucsess","failure"))
+np<-AddNode(np, "SUCCESS", "chance", c("succsess","failure"))

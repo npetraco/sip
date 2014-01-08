@@ -1,0 +1,16 @@
+net 
+{
+    node_size = (76 36);
+}
+
+node SUCCESS
+{
+    label = "SUCCESS";
+    position = (0 0);
+    states = ("succsess"  "failure");
+}
+
+potential (SUCCESS |)
+{
+    data = (0.50000000 0.50000000);
+}
