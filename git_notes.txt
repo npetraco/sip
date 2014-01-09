@@ -1,3 +1,4 @@
+BASIC ON LOCAL BOX:
 git init make a directory a git repos
 
 git status
@@ -6,7 +7,7 @@ git rm --cached filenames   to unstage
 git commit -m "message"
 git log
 
-every time you do a commit the files staged in the cache to be committed are fluted. Once changes are made to files, they need to be restaged
+Note: every time you do a commit the files staged in the cache to be committed are fluted. Once changes are made to files, they need to be restaged
 
 git diff look at unstaged changes
 git diff --cached look at staged changes
@@ -14,11 +15,21 @@ git diff --cached look at staged changes
 
 git log --oneline
 
-shortcuts:
+Shortcuts:
 git commit -a -m "message"   add and commit
 git status -s show files that have been modified
 
-remote:
+REMOTE:
+SSH 
+In home area, copy .ssh directory to .ssh_ORIG incase you run into problems later
+
+ssh-keygen -t rsa -C “you@your.email.com” to generate keys to be able to do push/pull. Will ask you to dream up a password.
+
+In .ssh open up id_rsa.pub and copy out key. Go to Account settings, SSH keys tab and click Add SSH key. Paste in the public key from id_rsa.pub
+
+ssh -T git@github.com  to check and see if it worked. Should see something like  Hi YOU! You've successfully authenticated, but GitHub does not provide shell access.
+
+PUSH/PULL
 git remote add origin git@github.com:npetraco/sip.git    to tell local git where to push out the project to (the remote repos)
 
 git push origin master   upload local repos to remote
