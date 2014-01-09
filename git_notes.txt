@@ -20,7 +20,7 @@ git commit -a -m "message"   add and commit
 git status -s show files that have been modified
 
 REMOTE:
-SSH 
+SSH (Only need to do this one for each computer you work from)
 In home area, copy .ssh directory to .ssh_ORIG incase you run into problems later
 
 ssh-keygen -t rsa -C “you@your.email.com” to generate keys to be able to do push/pull. Will ask you to dream up a password.
