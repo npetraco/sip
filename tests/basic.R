@@ -2,3 +2,8 @@ library(sip)
 
 np<-CreateSmlieNetwork()
 np<-AddNode(np, "SUCCESS", "chance", c("succsess","failure"))
+np<-AddNode(np, "FORCAST", "chance", c("good","moderate","poor"))
+np<-AddArc(np, "SUCCESS", "FORCAST")
+#junk<-AddArc(np, "FORCAST", "SUCCESS")
+WriteNetwork(np,"/Users/npetraco/codes/R/sip/tests/anet.net")
+#CreateNetwork_testing_func()

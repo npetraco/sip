@@ -5,6 +5,23 @@
 
 using namespace Rcpp;
 
+// AddArc
+SEXP AddArc(SEXP net_ptr, SEXP parent_node_name, SEXP child_node_name);
+RcppExport SEXP sip_AddArc(SEXP net_ptrSEXP, SEXP parent_node_nameSEXP, SEXP child_node_nameSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP parent_node_name = Rcpp::as<SEXP >(parent_node_nameSEXP);
+        SEXP child_node_name = Rcpp::as<SEXP >(child_node_nameSEXP);
+        SEXP __result = AddArc(net_ptr, parent_node_name, child_node_name);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // AddNode
 SEXP AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states);
 RcppExport SEXP sip_AddNode(SEXP net_ptrSEXP, SEXP node_nameSEXP, SEXP node_typeSEXP, SEXP node_statesSEXP) {
@@ -23,6 +40,20 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// CreateNetwork_testing_func
+int CreateNetwork_testing_func();
+RcppExport SEXP sip_CreateNetwork_testing_func() {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        int __result = CreateNetwork_testing_func();
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // CreateSmlieNetwork
 SEXP CreateSmlieNetwork();
 RcppExport SEXP sip_CreateSmlieNetwork() {
@@ -35,5 +66,18 @@ BEGIN_RCPP
     }
     UNPROTECT(1);
     return __sexp_result;
+END_RCPP
+}
+// WriteNetwork
+void WriteNetwork(SEXP net_ptr, SEXP filepath);
+RcppExport SEXP sip_WriteNetwork(SEXP net_ptrSEXP, SEXP filepathSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP filepath = Rcpp::as<SEXP >(filepathSEXP);
+        WriteNetwork(net_ptr, filepath);
+    }
+    return R_NilValue;
 END_RCPP
 }

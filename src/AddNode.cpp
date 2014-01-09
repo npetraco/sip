@@ -46,20 +46,21 @@ SEXP AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
   
   int node_handel = net_ptr_mod->AddNode( dsl_node_typ, CHAR(STRING_ELT(node_name,0)) ); //Convert node_name to required const char *
   //int node_handel = net_ptr_mod->AddNode( dsl_node_typ, (const char*)node_name ); //DOESN'T WORK FOR scalar SEXP! Shorter alternative to the above line. Just cast the node_name SEXP into a const char*
-  //Rcout<<"Sent in string         "<< node_name <<endl;
+  //Rcout<<"Node:         "<< node_name <<endl;
   //Rcout<<(const char*)node_name<<endl;
-  Rcout<<"Convert to char        "<<CHAR(STRING_ELT(node_name,0))<<endl;
-  //Rcout<<"Get the node handel??: "<<node_handel<<endl;
+  Rcout<<"Node         "<<CHAR(STRING_ELT(node_name,0))<<endl;
+  Rcout<<"Node handle: "<<node_handel<<endl;
   if(node_handel < 0){
     Rcout<<"There is a problem with instantiating the node."<<endl;
     Rcout<<"Execution for pointers out of order??"<<endl;
-    Rcout<<"node_handel is negative. Exiting!!!!"<<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
+    Rcout<<"node_handle is negative. Exiting!!!! "<<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
     return wrap(-1);
   }
   
   // setting number (and names) of the states for the node
   DSL_idArray someNames;
   
+  someNames.Flush();
   Rcpp::CharacterVector node_states_cv(node_states); //"as" the node_states SEXP into a CharacterVector
   for(int i = 0; i < node_states_cv.length(); i++){
     //Rcout<< (const char*)node_states_cv[i] <<endl;
@@ -68,7 +69,7 @@ SEXP AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
   
   net_ptr_mod->GetNode( node_handel )->Definition()->SetNumberOfOutcomes(someNames);
   
-  net_ptr_mod->WriteFile("/Users/npetraco/codes/R/sip/tests/anet.net", DSL_HUGIN_FORMAT);
+  //net_ptr_mod->WriteFile("/Users/npetraco/codes/R/sip/tests/anet.net", DSL_HUGIN_FORMAT);
   //DSL_network newNet = *net_ptr_mod;
   //newNet.WriteFile("/Users/npetraco/codes/R/sip/tests/anet.net");
 
