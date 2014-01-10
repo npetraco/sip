@@ -17,8 +17,8 @@ CreateSmlieNetwork <- function() {
     .Call('sip_CreateSmlieNetwork', PACKAGE = 'sip')
 }
 
-PopulateNode <- function(net_ptr, node_name) {
-    invisible(.Call('sip_PopulateNode', PACKAGE = 'sip', net_ptr, node_name))
+GetLevelsAssociatedWithNode <- function(net_ptr, node_name) {
+    .Call('sip_GetLevelsAssociatedWithNode', PACKAGE = 'sip', net_ptr, node_name)
 }
 
 WriteNetwork <- function(net_ptr, filepath) {

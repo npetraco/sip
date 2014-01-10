@@ -68,17 +68,20 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
-// PopulateNode
-void PopulateNode(SEXP net_ptr, SEXP node_name);
-RcppExport SEXP sip_PopulateNode(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+// GetLevelsAssociatedWithNode
+List GetLevelsAssociatedWithNode(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_GetLevelsAssociatedWithNode(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
 BEGIN_RCPP
+    SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
         SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
-        PopulateNode(net_ptr, node_name);
+        List __result = GetLevelsAssociatedWithNode(net_ptr, node_name);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
-    return R_NilValue;
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
 // WriteNetwork
