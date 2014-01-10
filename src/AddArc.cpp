@@ -17,8 +17,8 @@ SEXP AddArc(SEXP net_ptr, SEXP parent_node_name, SEXP child_node_name) {
   //net_ptr_mod->AddArc(net_ptr_mod->GetNode(0)->Handle(),net_ptr_mod->GetNode(1)->Handle());
   int parent_node_handle = net_ptr_mod->FindNode( CHAR(STRING_ELT(parent_node_name,0)) );
   int child_node_handle = net_ptr_mod->FindNode( CHAR(STRING_ELT(child_node_name,0)) );
-  //Rcout<< parent_node_handle <<endl;
-  //Rcout<< child_node_handle <<endl;  
+  //cout<< parent_node_handle <<endl;
+  //cout<< child_node_handle <<endl;  
   net_ptr_mod->AddArc(parent_node_handle,child_node_handle); //HAVE TO USE NODE HANDLES.
   
   return net_ptr_mod;

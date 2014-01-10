@@ -68,6 +68,19 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// PopulateNode
+void PopulateNode(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_PopulateNode(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        PopulateNode(net_ptr, node_name);
+    }
+    return R_NilValue;
+END_RCPP
+}
 // WriteNetwork
 void WriteNetwork(SEXP net_ptr, SEXP filepath);
 RcppExport SEXP sip_WriteNetwork(SEXP net_ptrSEXP, SEXP filepathSEXP) {

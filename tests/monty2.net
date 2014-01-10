@@ -1,0 +1,48 @@
+net 
+{
+    node_size = (76 36);
+}
+
+node Prize
+{
+    label = "Prize";
+    position = (0 0);
+    states = ("door1"  "door2"  "door3");
+}
+
+node You_Choose
+{
+    label = "You_Choose";
+    position = (0 0);
+    states = ("door1"  "door2"  "door3");
+}
+
+node Monty_Chooses
+{
+    label = "Monty_Chooses";
+    position = (0 0);
+    states = ("door1"  "door2"  "door3");
+}
+
+potential (Prize |)
+{
+    data = (0.33333333 0.33333333 0.33333333);
+}
+
+potential (You_Choose |)
+{
+    data = (0.33333333 0.33333333 0.33333333);
+}
+
+potential (Monty_Chooses | You_Choose Prize)
+{
+    data = (((0.33333333 0.33333333 0.33333333)
+        (0.33333333 0.33333333 0.33333333)
+        (0.33333333 0.33333333 0.33333333))
+        ((0.33333333 0.33333333 0.33333333)
+        (0.33333333 0.33333333 0.33333333)
+        (0.33333333 0.33333333 0.33333333))
+        ((0.33333333 0.33333333 0.33333333)
+        (0.33333333 0.33333333 0.33333333)
+        (0.33333333 0.33333333 0.33333333)));
+}
