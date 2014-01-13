@@ -84,6 +84,54 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// GetNodeTable
+NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_GetNodeTable(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        NumericVector __result = GetNodeTable(net_ptr, node_name);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// NodeType
+std::string NodeType(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_NodeType(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        std::string __result = NodeType(net_ptr, node_name);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// NodeExistsQ
+int NodeExistsQ(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_NodeExistsQ(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        int __result = NodeExistsQ(net_ptr, node_name);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // WriteNetwork
 void WriteNetwork(SEXP net_ptr, SEXP filepath);
 RcppExport SEXP sip_WriteNetwork(SEXP net_ptrSEXP, SEXP filepathSEXP) {

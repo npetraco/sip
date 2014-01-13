@@ -21,6 +21,18 @@ GetLevelsAssociatedWithNode <- function(net_ptr, node_name) {
     .Call('sip_GetLevelsAssociatedWithNode', PACKAGE = 'sip', net_ptr, node_name)
 }
 
+GetNodeTable <- function(net_ptr, node_name) {
+    .Call('sip_GetNodeTable', PACKAGE = 'sip', net_ptr, node_name)
+}
+
+NodeType <- function(net_ptr, node_name) {
+    .Call('sip_NodeType', PACKAGE = 'sip', net_ptr, node_name)
+}
+
+NodeExistsQ <- function(net_ptr, node_name) {
+    .Call('sip_NodeExistsQ', PACKAGE = 'sip', net_ptr, node_name)
+}
+
 WriteNetwork <- function(net_ptr, filepath) {
     invisible(.Call('sip_WriteNetwork', PACKAGE = 'sip', net_ptr, filepath))
 }

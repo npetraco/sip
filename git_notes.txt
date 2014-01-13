@@ -1,4 +1,6 @@
-BASIC ON LOCAL BOX:
+----------------------------
+BASIC COMMANDS ON LOCAL BOX:
+----------------------------
 git init make a directory a git repos
 
 git status
@@ -12,16 +14,17 @@ Note: every time you do a commit the files staged in the cache to be committed a
 git diff look at unstaged changes
 git diff --cached look at staged changes
 
-
 git log --oneline
 
 Shortcuts:
 git commit -a -m "message"   add and commit
 git status -s show files that have been modified
 
+---------
 REMOTE:
+---------
 SSH (Only need to do this one for each computer you work from)
-In home area, copy .ssh directory to .ssh_ORIG incase you run into problems later
+In home area, copy .ssh directory to .ssh_ORIG incase you run into problems later.
 
 ssh-keygen -t rsa -C “you@your.email.com” to generate keys to be able to do push/pull. Will ask you to dream up a password.
 
@@ -42,3 +45,15 @@ git pull origin master
 git add -A
 git commit -m "modified code"
 git push origin master
+
+----------
+BRANCHING:
+----------
+git branch
+
+git branch new-branch-name
+git checkout new-branch-name   to switch to this branch
+
+git clone git@github.com:npetraco/sip.git  to copy the wile project from the remote repos to your computer. Note: SSH key on the computer must be set up.
+
+If you checkout to the new-branch-name branch, now all git adds, commits pushes, etc will be to/from THIS branch, and NOT the master branch

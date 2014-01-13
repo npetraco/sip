@@ -57,7 +57,14 @@ SEXP AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
     return wrap(-1);
   }
   
-  // setting number (and names) of the states for the node
+  // Setting number (and names) of the states for the node
+  
+  //if the node is a utlity node, it does not have states. Just return.
+  if(node_type_s == "utility") {
+    return net_ptr_mod;
+  }
+  
+  //if the node is a chance or decision node, put names to the states
   DSL_idArray someNames;
   
   someNames.Flush();
