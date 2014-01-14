@@ -46,7 +46,7 @@ int NodeExistsQ(SEXP net_ptr, SEXP node_name) {
     //cout << "No Node By That Name!!" << endl;
     return(DSL_OUT_OF_RANGE);
   } else {
-    return (1);
+    return (0);
   }
 
 }

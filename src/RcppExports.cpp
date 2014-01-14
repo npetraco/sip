@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // AddArc
-SEXP AddArc(SEXP net_ptr, SEXP parent_node_name, SEXP child_node_name);
+int AddArc(SEXP net_ptr, SEXP parent_node_name, SEXP child_node_name);
 RcppExport SEXP sip_AddArc(SEXP net_ptrSEXP, SEXP parent_node_nameSEXP, SEXP child_node_nameSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
@@ -15,7 +15,7 @@ BEGIN_RCPP
         SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
         SEXP parent_node_name = Rcpp::as<SEXP >(parent_node_nameSEXP);
         SEXP child_node_name = Rcpp::as<SEXP >(child_node_nameSEXP);
-        SEXP __result = AddArc(net_ptr, parent_node_name, child_node_name);
+        int __result = AddArc(net_ptr, parent_node_name, child_node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
@@ -23,7 +23,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // AddNode
-SEXP AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states);
+int AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states);
 RcppExport SEXP sip_AddNode(SEXP net_ptrSEXP, SEXP node_nameSEXP, SEXP node_typeSEXP, SEXP node_statesSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
@@ -33,7 +33,7 @@ BEGIN_RCPP
         SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
         SEXP node_type = Rcpp::as<SEXP >(node_typeSEXP);
         SEXP node_states = Rcpp::as<SEXP >(node_statesSEXP);
-        SEXP __result = AddNode(net_ptr, node_name, node_type, node_states);
+        int __result = AddNode(net_ptr, node_name, node_type, node_states);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
@@ -68,16 +68,32 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
-// GetLevelsAssociatedWithNode
-List GetLevelsAssociatedWithNode(SEXP net_ptr, SEXP node_name);
-RcppExport SEXP sip_GetLevelsAssociatedWithNode(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+// GetLevelsAssociatedWithChanceOrDecisionNode
+List GetLevelsAssociatedWithChanceOrDecisionNode(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_GetLevelsAssociatedWithChanceOrDecisionNode(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
         SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
-        List __result = GetLevelsAssociatedWithNode(net_ptr, node_name);
+        List __result = GetLevelsAssociatedWithChanceOrDecisionNode(net_ptr, node_name);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// GetLevelsAssociatedWithUtilityNode
+List GetLevelsAssociatedWithUtilityNode(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_GetLevelsAssociatedWithUtilityNode(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        List __result = GetLevelsAssociatedWithUtilityNode(net_ptr, node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

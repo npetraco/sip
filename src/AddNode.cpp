@@ -6,14 +6,16 @@ using namespace Rcpp;
 using namespace std;
 
 // [[Rcpp::export]]
-SEXP AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
+int AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
   
   //"as" the pointer sent in into a Rcpp Xptr 
   Rcpp::XPtr<DSL_network> net_ptr_mod(net_ptr);
  
   // create node
   int dsl_node_typ = -1;                                 //initialize node type to an impossible value
-  std::string node_type_s = as<std::string>(node_type); //Convert node_type SEXP to string
+  std::string node_type_s = as<std::string>(node_type); //Convert node_type SEXP to string 
+  std::transform(node_type_s.begin(), node_type_s.end(), node_type_s.begin(), ::tolower); //Make lowercase
+  
   if( node_type_s == "chance" ){
     dsl_node_typ = DSL_CPT;
   }
@@ -33,38 +35,40 @@ SEXP AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
   else{
     cout<< "Unknown node type:" << node_type_s << "!" <<endl;
     cout<< "Exiting!!!!" <<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
-    return wrap(-1);
+    return -1;
   }
   //Check to see if the dsl_node_typ is still negative. Indicates there still is a problem.
   if(dsl_node_typ < 0){
     cout<< "There was a problem. Execution for pointers out of order??" <<endl;
     cout<< "Exiting!!!!" <<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
-    return wrap(-1);
+    return -1;
   }
   
   //cout<< dsl_node_typ << endl;
   
+  //Add the node
   int node_handel = net_ptr_mod->AddNode( dsl_node_typ, CHAR(STRING_ELT(node_name,0)) ); //Convert node_name to required const char *
   //int node_handel = net_ptr_mod->AddNode( dsl_node_typ, (const char*)node_name ); //DOESN'T WORK FOR scalar SEXP! Shorter alternative to the above line. Just cast the node_name SEXP into a const char*
   //cout<<"Node:         "<< node_name <<endl;
   //cout<<(const char*)node_name<<endl;
-  cout<<"Node         "<<CHAR(STRING_ELT(node_name,0))<<endl;
+  cout<<"Added Node:  "<<CHAR(STRING_ELT(node_name,0))<<endl;
   cout<<"Node handle: "<<node_handel<<endl;
   if(node_handel < 0){
     cout<<"There is a problem with instantiating the node."<<endl;
     cout<<"Execution for pointers out of order??"<<endl;
-    cout<<"node_handle is negative. Exiting!!!! "<<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
-    return wrap(-1);
+    cout<<"node_handle is negative. Error code: " << node_handel << " Exiting!!!! "<<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
+    return -1;
   }
   
   // Setting number (and names) of the states for the node
   
-  //if the node is a utlity node, it does not have states. Just return.
+  //If the node is a utlity node, it does not have states. Just return.
   if(node_type_s == "utility") {
-    return net_ptr_mod;
+    //return net_ptr_mod;
+    return 0;
   }
   
-  //if the node is a chance or decision node, put names to the states
+  //If the node is a chance or decision node, put names to the states
   DSL_idArray someNames;
   
   someNames.Flush();
@@ -80,6 +84,8 @@ SEXP AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
   //DSL_network newNet = *net_ptr_mod;
   //newNet.WriteFile("/Users/npetraco/codes/R/sip/tests/anet.net");
 
-  return net_ptr_mod;
+  //return net_ptr_mod;
+  
+  return 0;
   
 }

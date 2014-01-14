@@ -9,12 +9,16 @@ using namespace std;
 SEXP CreateSmlieNetwork() {
   
   //Declare a SMILE network object
-  DSL_network theNet;
+  DSL_network network;
   
-  //Wrap it in an external pointer and return it for later use:
-  const Rcpp::XPtr<DSL_network> theNet_ptr( new DSL_network(), true ); //See Modules vignette, pp. 2
+  //Wrap it in an Rcpp external pointer and return it for later use:
+  // SHOULD const BE SOMEWHERE TO KEEP POINTER CONSTANT?????
+  Rcpp::XPtr<DSL_network> network_ptr( new DSL_network(), true ); //See Modules vignette, pp. 2
   
-  //PUT IN APPROPRIATE ERROR TRAPS FOR PRODUCTION!!!!
-
-  return theNet_ptr ;
+  //NOTE: ERROR TRAPS are on the R side, i.e. create.network()
+  
+  //Return the pointer. What it's poiting at can be modified by simply sending 
+  //it into the various cpp and R wrappers
+  return network_ptr;
+  
 }

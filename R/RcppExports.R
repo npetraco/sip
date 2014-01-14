@@ -17,8 +17,12 @@ CreateSmlieNetwork <- function() {
     .Call('sip_CreateSmlieNetwork', PACKAGE = 'sip')
 }
 
-GetLevelsAssociatedWithNode <- function(net_ptr, node_name) {
-    .Call('sip_GetLevelsAssociatedWithNode', PACKAGE = 'sip', net_ptr, node_name)
+GetLevelsAssociatedWithChanceOrDecisionNode <- function(net_ptr, node_name) {
+    .Call('sip_GetLevelsAssociatedWithChanceOrDecisionNode', PACKAGE = 'sip', net_ptr, node_name)
+}
+
+GetLevelsAssociatedWithUtilityNode <- function(net_ptr, node_name) {
+    .Call('sip_GetLevelsAssociatedWithUtilityNode', PACKAGE = 'sip', net_ptr, node_name)
 }
 
 GetNodeTable <- function(net_ptr, node_name) {

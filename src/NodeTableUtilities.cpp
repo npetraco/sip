@@ -6,13 +6,14 @@
 using namespace Rcpp;
 using namespace std;
 
-/*==============================================*/
-/*Get the levels associated with the node and   */
-/*the levels associated with the node's parents */
-/*==============================================*/
+/*=================================================*/
+/*Get the levels associated with a chance/decision */
+/*node and the levels associated with the node's   */
+/*parents.                                         */
+/*=================================================*/
 
 // [[Rcpp::export]]
-List GetLevelsAssociatedWithNode(SEXP net_ptr, SEXP node_name) {
+List GetLevelsAssociatedWithChanceOrDecisionNode(SEXP net_ptr, SEXP node_name) {
   
   //"as" the pointer sent in into a Rcpp Xptr, i.e. a smart (Rcpp) pointer to the network
   Rcpp::XPtr<DSL_network> netx(net_ptr);
@@ -75,9 +76,65 @@ List GetLevelsAssociatedWithNode(SEXP net_ptr, SEXP node_name) {
 }
 
 
-/*==============================================*/
-/*Get the doubles table for the node            */
-/*==============================================*/
+/*=================================================*/
+/*Bulky but more readable (for me) to have a       */
+/*function for utility nodes.                      */
+/*Get the levels associated with a utility         */
+/*node's parents.                                  */
+/*=================================================*/
+
+// [[Rcpp::export]]
+List GetLevelsAssociatedWithUtilityNode(SEXP net_ptr, SEXP node_name) {
+  
+  //"as" the pointer sent in into a Rcpp Xptr, i.e. a smart (Rcpp) pointer to the network
+  Rcpp::XPtr<DSL_network> netx(net_ptr);
+  
+  int node_handle = netx->FindNode( CHAR(STRING_ELT(node_name,0)) );
+  DSL_node *childNode = netx->GetNode(node_handle);                    //Pointer to the child node object
+  std::string childNodeName = childNode->Info().Header().GetName();    //Child Node name (cast to a string)
+
+  //We want access to the parent levels. Utility nodes dont have child levels
+  DSL_intArray parent_handles = netx->GetParents(node_handle);       //Parent handles
+  int numParents =  parent_handles.NumItems();                       //Number of parent nodes
+  
+  Rcpp::CharacterVector allNodeNames_cv(numParents);  //Container to hold parent's names 
+
+  Rcpp::List nodeLevelsInfo(numParents);              //Container to hold parent levels
+  
+  //Loop over the parent nodes and extract names/levels:
+  //cout<<"Number of parents: "<<numParents<<endl;
+  for(int i = 0; i < numParents; i++){         
+    DSL_node *aParentNode = netx->GetNode( parent_handles.Subscript(i) );  //Grab a parent node
+    std::string aParentNodeName = aParentNode->Info().Header().GetName();  //Get its name
+    allNodeNames_cv[i] = aParentNodeName;                                //Store it
+    //cout << aParentNodeName << endl;
+    
+    int parentNumLevels = aParentNode->Definition()->GetNumberOfOutcomes();        //Number of levels (Outcomes)
+    DSL_idArray *parentNodeLevels = aParentNode->Definition()->GetOutcomesNames(); //Node levels (Outcomes)
+
+    Rcpp::CharacterVector parentNodeLevels_cv(parentNumLevels);  //Store the parent's levels in a CharacterVector 
+    for(int j = 0; j < parentNumLevels; j++){
+      parentNodeLevels_cv[j] = parentNodeLevels->Subscript(j);
+      //cout << "    " <<parentNodeLevels_cv[j] << endl;
+    }
+    nodeLevelsInfo[i] = parentNodeLevels_cv;                 //Put into a running List
+  }
+    
+  Rcpp::List allInfo;
+  allInfo = List::create(
+         Rcpp::Named("Names")= allNodeNames_cv,
+         Rcpp::Named("Levels")= nodeLevelsInfo
+         );
+         
+  return wrap(allInfo);
+ 
+}
+
+
+/*===================================================*/
+/*Get the doubles table for chance and utility nodes */
+/*NOTE: decision nodes don have a table              */
+/*===================================================*/
 
 // [[Rcpp::export]]
 NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name) {
@@ -88,24 +145,46 @@ NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name) {
   int node_handle = netx->FindNode( CHAR(STRING_ELT(node_name,0)) );
   DSL_node *childNode = netx->GetNode(node_handle);                    //Pointer to the child node object
   
-  //We want to count the node levels and the node's parent levels
-  int childNumLevels = childNode->Definition()->GetNumberOfOutcomes(); //Number of levels for the child (Outcomes)
+  //Node type for use with decision/utility node handleing below
+  const char * nodeType = childNode->Definition()->GetTypeName();
+  std::string nodeType_s = nodeType;
+  
+  //If node is chance, it has levels. 
+  int childNumLevels = 0;
+  if( nodeType_s == "CPT"){
+    //We want to count the node levels and the node's parent levels
+    childNumLevels = childNode->Definition()->GetNumberOfOutcomes(); //Number of levels for the child (Outcomes)
+  }
   
   //We want the same level count info for the parent nodes:
   DSL_intArray parent_handles = netx->GetParents(node_handle);         //Get Parent handles
   int numParents =  parent_handles.NumItems();                         //Number of parent nodes
   
-  //Container to hold the number of levels for the node and its parents:
-  IntegerVector levelCounts(1+numParents);
-  levelCounts[0] = childNumLevels;
+  //Container to hold the number of levels.
+  //CAREFUL. Don't take decision nodes into account. DO THAT ON THE R SIDE!!!!!!!
+  IntegerVector levelCounts;
+  if( nodeType_s == "CPT"){                  //For chance node
+    IntegerVector levelCounts(1+numParents);  //Is there a better way to do this other than redeclairing??
+    levelCounts[0] = childNumLevels;
+  }
+  if( nodeType_s == "TABLE"){               //For utility node
+    IntegerVector levelCounts(numParents);
+  }
+  
     
   //Loop over the parent nodes and extract level counts:
   for(int i = 0; i < numParents; i++){         
     DSL_node *aParentNode = netx->GetNode( parent_handles.Subscript(i) );  //Grab a parent node
     
     int parentNumLevels = aParentNode->Definition()->GetNumberOfOutcomes();//Number of levels (Outcomes)
-    levelCounts[i+1] = parentNumLevels;
 
+    if( nodeType_s == "CPT"){             //For chance node
+      levelCounts[i+1] = parentNumLevels;
+    }
+    if( nodeType_s == "TABLE"){          //For utility node
+      levelCounts[i] = parentNumLevels;
+    }
+    
   }
   //printArray(levelCounts, levelCounts.size());
   
@@ -115,6 +194,10 @@ NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name) {
   DSL_intArray theCoordinates(numCoordinates);    //Declare a DSL_intArray to hold the state
   //printIntArray(theCoordinates.Items(), numCoordinates);  
 */  
+
+  //if(node_type_s == "LIST"){ //The node is a decision node. There is not table. Check for this on the R side
+  //  
+  //}
 
   //Declare a node table (cpt for a chance node) and fill it up
   DSL_Dmatrix *theCpt;
