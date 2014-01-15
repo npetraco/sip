@@ -15,7 +15,11 @@ add.arc(np, "INVEST", "GAIN")
 add.arc(np, "SUCCESS", "GAIN")
 
 #Prior node
-get.table(np,"SUCCESS")
+#get.table(np,"SUCCESS")
+set.table(np,"FORCAST",NULL)
+set.table(np,"SUCCESS",NULL)
+set.table(np,"GAIN",NULL)
+set.table(np,"INVEST",NULL)
 
 #Conditional node (one parent)
 get.table(np,"FORCAST")

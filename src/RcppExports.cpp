@@ -116,6 +116,19 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// SetNodeTable
+void SetNodeTable(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_SetNodeTable(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        SetNodeTable(net_ptr, node_name);
+    }
+    return R_NilValue;
+END_RCPP
+}
 // NodeType
 std::string NodeType(SEXP net_ptr, SEXP node_name);
 RcppExport SEXP sip_NodeType(SEXP net_ptrSEXP, SEXP node_nameSEXP) {

@@ -118,41 +118,84 @@ get.table<-function(network.pointer, node.name){
 #--------------------------------------
 set.table<-function(network.pointer, node.name, values){
   
-  #PUT IN ERROR TRAPS PRODUCTION!!!!!
-  #CHECK NETWORK EXISTS
-  #CHECK NODE NAME EXISTS
-  #CHECK IF NODE IS A CHANCE NODE, THAT THE PROBS ADD TO 1 WHEN REQUIRED
+  #CHECK THAT NETWORK EXISTS
+  if(is.nullptr(network.pointer)==T) {
+    stop("Network Doesn't Exist!!")
+  } 
   
-  level.info <- GetLevelsAssociatedWithNode(network.pointer, node.name)
-  #COUNT THE LEVELS TO GET THE STATE VECTORS RIGHT!!!!
-  state.mat <- generateTableRowLevels(level.info)
-  #print(state.mat)
-  
-  #Count the unique levels for each node involved. The first is the child.
-  level.counts.vec <- sapply(1:ncol(state.mat),function(x){length(unique(state.mat[,x]))})
-  #Get the state's indices of occurance in the column (node)
-  level.idxs.list<-sapply(1:length(level.counts.vec),function(x){list(0:(level.counts.vec[x]-1))})
-  
-  #print(level.idxs.list)
-  #Get the unique state names for each node. The child node is first
-  state.level.names <- sapply(1:ncol(state.mat),function(x){list(unique(state.mat[,x]))})
-  
-  #print(state.level.names)
-  
-  #Translate each state name to its corresponding integer index. This (interger state vectors) 
-  #is what SMILE needs to compute the unique index (row index) for each combination of states 
-  state.idx.mat<-array(NA,dim(state.mat))
-  for(i in 1:ncol(state.mat)){
-    for(j in 1:length(state.level.names[[i]])){
-      
-      chg.idxs<-which(state.mat[,i] == state.level.names[[i]][j])
-      state.idx.mat[chg.idxs,i] <- level.idxs.list[[i]][j]
-    }
+  #CHECK TO SEE IF NODES EXISTS
+  if(NodeExistsQ(network.pointer, node.name)== -2){ #DSL_OUT_OF_RANGE is -2
+    stop("Node: ",node.name, " Doesn't Exists!")
   }
   
-  #SMILE expects the child node levels are the last column:
-  state.idx.mat <- cbind(state.idx.mat[,2:ncol(state.idx.mat)], state.idx.mat[,1])
+  #Query the node typ to see what algs to use
+  nodetyp <- NodeType(network.pointer, node.name)
   
-  print(state.idx.mat)
+  #CHECK TO SEE THAT ONLY A SUPPORTED NODE TYPE IS REQUESTED
+  if( !(tolower(nodetyp) %in%  c("cpt", "table"))) {
+    stop("Node type: ", nodetyp, " not supported.")
+  }
+  
+  #CHECK IF NODE IS A CHANCE NODE, THAT THE PROBS ADD TO 1 WHEN REQUIRED
+  
+  
+  #----
+  if(nodetyp == "CPT") { #chance node
+    
+    level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
+    state.mat <- generateTableRowLevels(level.info)
+    value <- SetNodeTable(network.pointer, node.name)
+    
+    #print(state.mat)
+    #print(value)
+    #return(data.frame(value,state.mat))
+  }
+  if(nodetyp == "TABLE"){ #utility node
+    
+    level.info <- GetLevelsAssociatedWithUtilityNode(network.pointer, node.name)
+    state.mat <- generateTableRowLevels(level.info)
+    value <- SetNodeTable(network.pointer, node.name)
+    
+    #return(data.frame(value,state.mat))
+    
+  }
+  
+  
+  #----
+  
+  
+  
+  
+#   level.info <- GetLevelsAssociatedWithNode(network.pointer, node.name)
+#   #COUNT THE LEVELS TO GET THE STATE VECTORS RIGHT!!!!
+#   state.mat <- generateTableRowLevels(level.info)
+#   #print(state.mat)
+#   
+#   #Count the unique levels for each node involved. The first is the child.
+#   level.counts.vec <- sapply(1:ncol(state.mat),function(x){length(unique(state.mat[,x]))})
+#   #Get the state's indices of occurance in the column (node)
+#   level.idxs.list<-sapply(1:length(level.counts.vec),function(x){list(0:(level.counts.vec[x]-1))})
+#   
+#   #print(level.idxs.list)
+#   #Get the unique state names for each node. The child node is first
+#   state.level.names <- sapply(1:ncol(state.mat),function(x){list(unique(state.mat[,x]))})
+#   
+#   #print(state.level.names)
+#   
+#   #Translate each state name to its corresponding integer index. This (interger state vectors) 
+#   #is what SMILE needs to compute the unique index (row index) for each combination of states 
+#   state.idx.mat<-array(NA,dim(state.mat))
+#   for(i in 1:ncol(state.mat)){
+#     for(j in 1:length(state.level.names[[i]])){
+#       
+#       chg.idxs<-which(state.mat[,i] == state.level.names[[i]][j])
+#       state.idx.mat[chg.idxs,i] <- level.idxs.list[[i]][j]
+#     }
+#   }
+#   
+#   #SMILE expects the child node levels are the last column:
+#   state.idx.mat <- cbind(state.idx.mat[,2:ncol(state.idx.mat)], state.idx.mat[,1])
+#   
+#   print(state.idx.mat)
   
 }
