@@ -29,8 +29,8 @@ GetNodeTable <- function(net_ptr, node_name) {
     .Call('sip_GetNodeTable', PACKAGE = 'sip', net_ptr, node_name)
 }
 
-SetNodeTable <- function(net_ptr, node_name) {
-    invisible(.Call('sip_SetNodeTable', PACKAGE = 'sip', net_ptr, node_name))
+SetNodeTable <- function(net_ptr, node_name, node_values) {
+    invisible(.Call('sip_SetNodeTable', PACKAGE = 'sip', net_ptr, node_name, node_values))
 }
 
 NodeType <- function(net_ptr, node_name) {

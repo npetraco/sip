@@ -142,19 +142,28 @@ set.table<-function(network.pointer, node.name, values){
   #----
   if(nodetyp == "CPT") { #chance node
     
+    #NODE CHECK FOR NULL VALUES
+    if(is.null(values)){
+      stop("Assign numeric values for the node states!!")
+    }
+    
+    #CHECK PROBS ARE "COHERENT" 
+    
     level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
     state.mat <- generateTableRowLevels(level.info)
-    value <- SetNodeTable(network.pointer, node.name)
+    value <- SetNodeTable(network.pointer, node.name, values)
     
-    #print(state.mat)
-    #print(value)
-    #return(data.frame(value,state.mat))
   }
   if(nodetyp == "TABLE"){ #utility node
     
+    #NODE CHECK FOR NULL VALUES
+    if(is.null(values)){
+      stop("Assign numeric values for the node states!!")
+    }
+    
     level.info <- GetLevelsAssociatedWithUtilityNode(network.pointer, node.name)
     state.mat <- generateTableRowLevels(level.info)
-    value <- SetNodeTable(network.pointer, node.name)
+    value <- SetNodeTable(network.pointer, node.name, values)
     
     #return(data.frame(value,state.mat))
     
