@@ -147,7 +147,7 @@ set.table<-function(network.pointer, node.name, values){
       stop("Assign numeric values for the node states!!")
     }
     
-    #CHECK PROBS ARE "COHERENT" 
+    #CHECK PROBS ARE "COHERENT" FOR PRODUCTION
     
     level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
     state.mat <- generateTableRowLevels(level.info)

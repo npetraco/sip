@@ -32,7 +32,7 @@ int AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
     //API: This node represents a continuous linearly additive utility function, i.e. a linear combination of its parents.
     dsl_node_typ = DSL_MAU;
   }
-  else{
+  else{ //FOR PRODUCTION PUT THIS ON THE R SIDE
     cout<< "Unknown node type:" << node_type_s << "!" <<endl;
     cout<< "Exiting!!!!" <<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
     return -1;
@@ -47,25 +47,27 @@ int AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
   //cout<< dsl_node_typ << endl;
   
   //Add the node
-  int node_handel = net_ptr_mod->AddNode( dsl_node_typ, CHAR(STRING_ELT(node_name,0)) ); //Convert node_name to required const char *
-  //int node_handel = net_ptr_mod->AddNode( dsl_node_typ, (const char*)node_name ); //DOESN'T WORK FOR scalar SEXP! Shorter alternative to the above line. Just cast the node_name SEXP into a const char*
-  //cout<<"Node:         "<< node_name <<endl;
-  //cout<<(const char*)node_name<<endl;
+  //NOTE: if an error occurs, node_handle is the ERROR CODE
+  int node_handle = net_ptr_mod->AddNode( dsl_node_typ, CHAR(STRING_ELT(node_name,0)) ); //Convert node_name to required const char *
+
+  //PRODUCTION: SHIFT THIS OVER TO THE R SIDE
   cout<<"Added Node:  "<<CHAR(STRING_ELT(node_name,0))<<endl;
-  cout<<"Node handle: "<<node_handel<<endl;
-  if(node_handel < 0){
+  cout<<"Node handle: "<<node_handle<<endl;
+  
+  if(node_handle < 0){
     cout<<"There is a problem with instantiating the node."<<endl;
     cout<<"Execution for pointers out of order??"<<endl;
-    cout<<"node_handle is negative. Error code: " << node_handel << " Exiting!!!! "<<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
-    return -1;
-  }
+    cout<<"node_handle is negative. Error code: " << node_handle << " Exiting!!!! "<<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
+    return node_handle;
+  }  
+
   
   // Setting number (and names) of the states for the node
   
   //If the node is a utlity node, it does not have states. Just return.
   if(node_type_s == "utility") {
     //return net_ptr_mod;
-    return 0;
+    return node_handle;
   }
   
   //If the node is a chance or decision node, put names to the states
@@ -73,19 +75,21 @@ int AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
   
   someNames.Flush();
   Rcpp::CharacterVector node_states_cv(node_states); //"as" the node_states SEXP into a CharacterVector
+  int errcod = 0;
   for(int i = 0; i < node_states_cv.length(); i++){
     //cout<< (const char*)node_states_cv[i] <<endl;
-    someNames.Add(node_states_cv[i]); //Each CharacterVector elem can be cast into the required const char*
+    errcod = someNames.Add(node_states_cv[i]); //Each CharacterVector elem can be cast into the required const char*
+    if(errcod<0){
+      return errcod; //PRODUCTION ADD ERROR HANDLER
+    }
   }
   
-  net_ptr_mod->GetNode( node_handel )->Definition()->SetNumberOfOutcomes(someNames);
+  //Think the return val for this (i.e. DSL_nodeDefinition::SetNumberOfOutcomes) is an ERROR CODE. 
+  errcod = net_ptr_mod->GetNode( node_handle )->Definition()->SetNumberOfOutcomes(someNames);
+  if(errcod<0){
+    return errcod; //PRODUCTION ADD ERROR HANDLER
+  }
   
-  //net_ptr_mod->WriteFile("/Users/npetraco/codes/R/sip/tests/anet.net", DSL_HUGIN_FORMAT);
-  //DSL_network newNet = *net_ptr_mod;
-  //newNet.WriteFile("/Users/npetraco/codes/R/sip/tests/anet.net");
-
-  //return net_ptr_mod;
-  
-  return 0;
+  return node_handle;  //Again, node_handle is the node index OR a DSL ERROR CODE if there was a problem.
   
 }

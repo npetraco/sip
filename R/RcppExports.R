@@ -17,6 +17,14 @@ CreateSmlieNetwork <- function() {
     .Call('sip_CreateSmlieNetwork', PACKAGE = 'sip')
 }
 
+DeleteArc <- function(net_ptr, parent_node_name, child_node_name) {
+    invisible(.Call('sip_DeleteArc', PACKAGE = 'sip', net_ptr, parent_node_name, child_node_name))
+}
+
+DeleteNode <- function(net_ptr, node_name) {
+    invisible(.Call('sip_DeleteNode', PACKAGE = 'sip', net_ptr, node_name))
+}
+
 GetLevelsAssociatedWithChanceOrDecisionNode <- function(net_ptr, node_name) {
     .Call('sip_GetLevelsAssociatedWithChanceOrDecisionNode', PACKAGE = 'sip', net_ptr, node_name)
 }

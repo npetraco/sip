@@ -68,6 +68,33 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// DeleteArc
+void DeleteArc(SEXP net_ptr, SEXP parent_node_name, SEXP child_node_name);
+RcppExport SEXP sip_DeleteArc(SEXP net_ptrSEXP, SEXP parent_node_nameSEXP, SEXP child_node_nameSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP parent_node_name = Rcpp::as<SEXP >(parent_node_nameSEXP);
+        SEXP child_node_name = Rcpp::as<SEXP >(child_node_nameSEXP);
+        DeleteArc(net_ptr, parent_node_name, child_node_name);
+    }
+    return R_NilValue;
+END_RCPP
+}
+// DeleteNode
+void DeleteNode(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_DeleteNode(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        DeleteNode(net_ptr, node_name);
+    }
+    return R_NilValue;
+END_RCPP
+}
 // GetLevelsAssociatedWithChanceOrDecisionNode
 List GetLevelsAssociatedWithChanceOrDecisionNode(SEXP net_ptr, SEXP node_name);
 RcppExport SEXP sip_GetLevelsAssociatedWithChanceOrDecisionNode(SEXP net_ptrSEXP, SEXP node_nameSEXP) {

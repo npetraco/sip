@@ -29,7 +29,10 @@ add.node<-function(network.pointer, node.name, node.type, node.levels=NULL) {
   err.cod<-AddNode(network.pointer, node.name, node.type, node.levels)
   
   #Make sure everything went ok
-  if(err.cod!=0){
+  if(err.cod<0){
+    
+    #PRODUCTION ADD ERROR STRING HADLER HERE
+    
     stop("Something went wrong in AddNode. Check network pointer for problems!!!!!")
   }
   

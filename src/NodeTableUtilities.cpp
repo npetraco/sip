@@ -26,14 +26,10 @@ List GetLevelsAssociatedWithChanceOrDecisionNode(SEXP net_ptr, SEXP node_name) {
   int childNumLevels = childNode->Definition()->GetNumberOfOutcomes();        //Number of levels for the child (Outcomes)
   DSL_idArray *childNodeLevels = childNode->Definition()->GetOutcomesNames(); //Node levels (Outcomes)
   
-  //cout << nodeName << endl;
-  //cout << "Number of levels: " << numLevels << endl;
-  
   //Put the node levels in an Rcpp CharacterVector
   Rcpp::CharacterVector childNodeLevels_cv(childNumLevels);
   for(int i = 0; i < childNumLevels; i++){
     childNodeLevels_cv[i] = childNodeLevels->Subscript(i);
-    //cout << nodeLevels_cv[i] << endl;
   }
 
   //We want the same levels info for the parent nodes:
@@ -47,12 +43,10 @@ List GetLevelsAssociatedWithChanceOrDecisionNode(SEXP net_ptr, SEXP node_name) {
   nodeLevelsInfo[0] = childNodeLevels_cv;
   
   //Loop over the parent nodes and extract names/levels:
-  //cout<<"Number of parents: "<<numParents<<endl;
   for(int i = 0; i < numParents; i++){         
     DSL_node *aParentNode = netx->GetNode( parent_handles.Subscript(i) );  //Grab a parent node
     std::string aParentNodeName = aParentNode->Info().Header().GetName();  //Get its name
     allNodeNames_cv[i+1] = aParentNodeName;                                //Store it
-    //cout << aParentNodeName << endl;
     
     int parentNumLevels = aParentNode->Definition()->GetNumberOfOutcomes();        //Number of levels (Outcomes)
     DSL_idArray *parentNodeLevels = aParentNode->Definition()->GetOutcomesNames(); //Node levels (Outcomes)
@@ -60,16 +54,15 @@ List GetLevelsAssociatedWithChanceOrDecisionNode(SEXP net_ptr, SEXP node_name) {
     Rcpp::CharacterVector parentNodeLevels_cv(parentNumLevels);  //Store the parent's levels in a CharacterVector 
     for(int j = 0; j < parentNumLevels; j++){
       parentNodeLevels_cv[j] = parentNodeLevels->Subscript(j);
-      //cout << "    " <<parentNodeLevels_cv[j] << endl;
     }
     nodeLevelsInfo[i+1] = parentNodeLevels_cv;                 //Put into a running List
   }
     
-  Rcpp::List allInfo;
-  allInfo = List::create(
+  Rcpp::List allInfo = 
+      List::create(
          Rcpp::Named("Names")= allNodeNames_cv,
          Rcpp::Named("Levels")= nodeLevelsInfo
-         );
+      );
          
   return wrap(allInfo);
  
@@ -102,12 +95,10 @@ List GetLevelsAssociatedWithUtilityNode(SEXP net_ptr, SEXP node_name) {
   Rcpp::List nodeLevelsInfo(numParents);              //Container to hold parent levels
   
   //Loop over the parent nodes and extract names/levels:
-  //cout<<"Number of parents: "<<numParents<<endl;
   for(int i = 0; i < numParents; i++){         
     DSL_node *aParentNode = netx->GetNode( parent_handles.Subscript(i) );  //Grab a parent node
     std::string aParentNodeName = aParentNode->Info().Header().GetName();  //Get its name
     allNodeNames_cv[i] = aParentNodeName;                                //Store it
-    //cout << aParentNodeName << endl;
     
     int parentNumLevels = aParentNode->Definition()->GetNumberOfOutcomes();        //Number of levels (Outcomes)
     DSL_idArray *parentNodeLevels = aParentNode->Definition()->GetOutcomesNames(); //Node levels (Outcomes)
@@ -115,16 +106,15 @@ List GetLevelsAssociatedWithUtilityNode(SEXP net_ptr, SEXP node_name) {
     Rcpp::CharacterVector parentNodeLevels_cv(parentNumLevels);  //Store the parent's levels in a CharacterVector 
     for(int j = 0; j < parentNumLevels; j++){
       parentNodeLevels_cv[j] = parentNodeLevels->Subscript(j);
-      //cout << "    " <<parentNodeLevels_cv[j] << endl;
     }
     nodeLevelsInfo[i] = parentNodeLevels_cv;                 //Put into a running List
   }
     
-  Rcpp::List allInfo;
-  allInfo = List::create(
+  Rcpp::List allInfo = 
+      List::create(
          Rcpp::Named("Names")= allNodeNames_cv,
          Rcpp::Named("Levels")= nodeLevelsInfo
-         );
+      );
          
   return wrap(allInfo);
  
@@ -163,19 +153,15 @@ NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name) {
   
   //Container to hold the number of levels.
   //CAREFUL. Don't take decision nodes into account. DO THAT ON THE R SIDE!!!!!!!
-  //IntegerVector levelCounts;
   std::vector<int> levelCounts(1);
   if( nodeType_s == "CPT"){                  //For chance node
-    //IntegerVector levelCounts(1+numParents);  //Is there a better way to do this other than redeclairing??
     levelCounts.resize(1+numParents);
     levelCounts[0] = childNumLevels;
   }
   if( nodeType_s == "TABLE"){               //For utility node
-    //IntegerVector levelCounts(numParents);
     levelCounts.resize(numParents);
   }
-  
-    
+      
   //Loop over the parent nodes and extract level counts:
   for(int i = 0; i < numParents; i++){         
     DSL_node *aParentNode = netx->GetNode( parent_handles.Subscript(i) );  //Grab a parent node
@@ -190,7 +176,6 @@ NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name) {
     }
     
   }
-  //printArray(levelCounts, levelCounts.size());
   
 /*  
   //Get the indices of each combination of the levels (states):
@@ -198,10 +183,6 @@ NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name) {
   DSL_intArray theCoordinates(numCoordinates);    //Declare a DSL_intArray to hold the state
   //printIntArray(theCoordinates.Items(), numCoordinates);  
 */  
-
-  //if(node_type_s == "LIST"){ //The node is a decision node. There is not table. Check for this on the R side
-  //  
-  //}
 
   //Declare a node table (cpt for a chance node) and fill it up
   DSL_Dmatrix *theCpt;
@@ -217,16 +198,11 @@ NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name) {
 */
 
   double *darray = theCpt->GetItems().Items();       //Grab the doubles array of the DSL_Matrix 
-  //cout << numStates << endl;
-  //printArray(darray, numStates);
   NumericVector darray_nv(numStates);
-  //printArray(darray_nv, numStates);
   
   for(int i = 0; i < numStates; i++){
     darray_nv[i] = darray[i];
   }
-  //printArray(darray_nv, numStates);
-  //cout << darray_nv[0] << endl;
     
   //string s = typeid(childNode->Definition()->GetDefinition(&theCpt)).name();
   //cout<< s << endl;
@@ -235,7 +211,6 @@ NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name) {
   return(wrap(darray_nv));
   
 }
-
 
 
 /*===================================================*/
@@ -277,9 +252,7 @@ void SetNodeTable(SEXP net_ptr, SEXP node_name, SEXP node_values) {
   if( nodeType_s == "TABLE"){               //For utility node
     levelCounts.resize(numParents);
   }
-  
-  cout<<"There are this many nodes involved: "<<levelCounts.size()<<endl;  
-    
+      
   //Loop over the parent nodes and extract level counts:
   for(int i = 0; i < numParents; i++){         
     DSL_node *aParentNode = netx->GetNode( parent_handles.Subscript(i) );  //Grab a parent node
