@@ -25,6 +25,10 @@ DeleteNode <- function(net_ptr, node_name) {
     invisible(.Call('sip_DeleteNode', PACKAGE = 'sip', net_ptr, node_name))
 }
 
+ErrorCode2String <- function(error_code_) {
+    .Call('sip_ErrorCode2String', PACKAGE = 'sip', error_code_)
+}
+
 GetLevelsAssociatedWithChanceOrDecisionNode <- function(net_ptr, node_name) {
     .Call('sip_GetLevelsAssociatedWithChanceOrDecisionNode', PACKAGE = 'sip', net_ptr, node_name)
 }

@@ -60,8 +60,8 @@ List GetLevelsAssociatedWithChanceOrDecisionNode(SEXP net_ptr, SEXP node_name) {
     
   Rcpp::List allInfo = 
       List::create(
-         Rcpp::Named("Names")= allNodeNames_cv,
-         Rcpp::Named("Levels")= nodeLevelsInfo
+          allNodeNames_cv,
+          nodeLevelsInfo
       );
          
   return wrap(allInfo);
@@ -111,9 +111,9 @@ List GetLevelsAssociatedWithUtilityNode(SEXP net_ptr, SEXP node_name) {
   }
     
   Rcpp::List allInfo = 
-      List::create(
-         Rcpp::Named("Names")= allNodeNames_cv,
-         Rcpp::Named("Levels")= nodeLevelsInfo
+    List::create(
+          allNodeNames_cv,
+          nodeLevelsInfo
       );
          
   return wrap(allInfo);

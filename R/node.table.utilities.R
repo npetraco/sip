@@ -84,6 +84,8 @@ get.table<-function(network.pointer, node.name){
   if(nodetyp == "LIST"){ #decision node
     
     level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
+    names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names 
+    
     state.mat <- generateTableRowLevels(level.info)
     #print(state.mat)
     #GetDecisionNodeTable(network.pointer, node.name)
@@ -93,6 +95,7 @@ get.table<-function(network.pointer, node.name){
   if(nodetyp == "CPT") { #chance node
     
     level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
+    names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
     state.mat <- generateTableRowLevels(level.info)
     value <- GetNodeTable(network.pointer, node.name)
     
@@ -103,6 +106,7 @@ get.table<-function(network.pointer, node.name){
   if(nodetyp == "TABLE"){ #utility node
     
     level.info <- GetLevelsAssociatedWithUtilityNode(network.pointer, node.name)
+    names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
     state.mat <- generateTableRowLevels(level.info)
     value <- GetNodeTable(network.pointer, node.name)
     
@@ -150,6 +154,7 @@ set.table<-function(network.pointer, node.name, values){
     #CHECK PROBS ARE "COHERENT" FOR PRODUCTION
     
     level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
+    names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
     state.mat <- generateTableRowLevels(level.info)
     value <- SetNodeTable(network.pointer, node.name, values)
     
@@ -162,6 +167,7 @@ set.table<-function(network.pointer, node.name, values){
     }
     
     level.info <- GetLevelsAssociatedWithUtilityNode(network.pointer, node.name)
+    names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
     state.mat <- generateTableRowLevels(level.info)
     value <- SetNodeTable(network.pointer, node.name, values)
     
