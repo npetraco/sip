@@ -48,4 +48,4 @@ set.table(np,"COST",c(-8000,0),printQ=TRUE)
 get.table(np,"HARV")
 set.table(np,"HARV",c(3000,20000),printQ=TRUE)
 
-write.network(np, "/Users/npetraco/codes/R/sip/tests/apple.net")
+write.network(np, "/Users/npetraco/codes/R/sip/tests/apple.net", "hugin")

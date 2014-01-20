@@ -12,9 +12,9 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP parent_node_name = Rcpp::as<SEXP >(parent_node_nameSEXP);
-        SEXP child_node_name = Rcpp::as<SEXP >(child_node_nameSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type parent_node_name(parent_node_nameSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type child_node_name(child_node_nameSEXP );
         int __result = AddArc(net_ptr, parent_node_name, child_node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -29,10 +29,10 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
-        SEXP node_type = Rcpp::as<SEXP >(node_typeSEXP);
-        SEXP node_states = Rcpp::as<SEXP >(node_statesSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_name(node_nameSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_type(node_typeSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_states(node_statesSEXP );
         int __result = AddNode(net_ptr, node_name, node_type, node_states);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -75,9 +75,9 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP parent_node_name = Rcpp::as<SEXP >(parent_node_nameSEXP);
-        SEXP child_node_name = Rcpp::as<SEXP >(child_node_nameSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type parent_node_name(parent_node_nameSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type child_node_name(child_node_nameSEXP );
         int __result = DeleteArc(net_ptr, parent_node_name, child_node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -92,8 +92,8 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_name(node_nameSEXP );
         int __result = DeleteNode(net_ptr, node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -108,7 +108,7 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP error_code_ = Rcpp::as<SEXP >(error_code_SEXP);
+        Rcpp::traits::input_parameter< SEXP >::type error_code_(error_code_SEXP );
         std::string __result = ErrorCode2String(error_code_);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -123,12 +123,24 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
         List __result = ErrorMessages(net_ptr);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
     return __sexp_result;
+END_RCPP
+}
+// NetworkInfo
+void NetworkInfo(SEXP net_ptr);
+RcppExport SEXP sip_NetworkInfo(SEXP net_ptrSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        NetworkInfo(net_ptr);
+    }
+    return R_NilValue;
 END_RCPP
 }
 // GetLevelsAssociatedWithChanceOrDecisionNode
@@ -138,8 +150,8 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_name(node_nameSEXP );
         List __result = GetLevelsAssociatedWithChanceOrDecisionNode(net_ptr, node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -154,8 +166,8 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_name(node_nameSEXP );
         List __result = GetLevelsAssociatedWithUtilityNode(net_ptr, node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -170,8 +182,8 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_name(node_nameSEXP );
         NumericVector __result = GetNodeTable(net_ptr, node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -185,9 +197,9 @@ RcppExport SEXP sip_SetNodeTable(SEXP net_ptrSEXP, SEXP node_nameSEXP, SEXP node
 BEGIN_RCPP
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
-        SEXP node_values = Rcpp::as<SEXP >(node_valuesSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_name(node_nameSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_values(node_valuesSEXP );
         SetNodeTable(net_ptr, node_name, node_values);
     }
     return R_NilValue;
@@ -200,8 +212,8 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_name(node_nameSEXP );
         std::string __result = NodeType(net_ptr, node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -216,8 +228,8 @@ BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type node_name(node_nameSEXP );
         int __result = NodeExistsQ(net_ptr, node_name);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
@@ -226,15 +238,33 @@ BEGIN_RCPP
 END_RCPP
 }
 // WriteNetwork
-int WriteNetwork(SEXP net_ptr, SEXP filepath);
-RcppExport SEXP sip_WriteNetwork(SEXP net_ptrSEXP, SEXP filepathSEXP) {
+int WriteNetwork(SEXP net_ptr, SEXP filepath, SEXP file_format);
+RcppExport SEXP sip_WriteNetwork(SEXP net_ptrSEXP, SEXP filepathSEXP, SEXP file_formatSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
-        SEXP filepath = Rcpp::as<SEXP >(filepathSEXP);
-        int __result = WriteNetwork(net_ptr, filepath);
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type filepath(filepathSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type file_format(file_formatSEXP );
+        int __result = WriteNetwork(net_ptr, filepath, file_format);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// ReadNetwork
+int ReadNetwork(SEXP net_ptr, SEXP filepath, SEXP file_format);
+RcppExport SEXP sip_ReadNetwork(SEXP net_ptrSEXP, SEXP filepathSEXP, SEXP file_formatSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< SEXP >::type net_ptr(net_ptrSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type filepath(filepathSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type file_format(file_formatSEXP );
+        int __result = ReadNetwork(net_ptr, filepath, file_format);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

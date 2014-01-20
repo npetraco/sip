@@ -33,6 +33,10 @@ ErrorMessages <- function(net_ptr) {
     .Call('sip_ErrorMessages', PACKAGE = 'sip', net_ptr)
 }
 
+NetworkInfo <- function(net_ptr) {
+    invisible(.Call('sip_NetworkInfo', PACKAGE = 'sip', net_ptr))
+}
+
 GetLevelsAssociatedWithChanceOrDecisionNode <- function(net_ptr, node_name) {
     .Call('sip_GetLevelsAssociatedWithChanceOrDecisionNode', PACKAGE = 'sip', net_ptr, node_name)
 }
@@ -57,7 +61,11 @@ NodeExistsQ <- function(net_ptr, node_name) {
     .Call('sip_NodeExistsQ', PACKAGE = 'sip', net_ptr, node_name)
 }
 
-WriteNetwork <- function(net_ptr, filepath) {
-    .Call('sip_WriteNetwork', PACKAGE = 'sip', net_ptr, filepath)
+WriteNetwork <- function(net_ptr, filepath, file_format) {
+    .Call('sip_WriteNetwork', PACKAGE = 'sip', net_ptr, filepath, file_format)
+}
+
+ReadNetwork <- function(net_ptr, filepath, file_format) {
+    .Call('sip_ReadNetwork', PACKAGE = 'sip', net_ptr, filepath, file_format)
 }
 
