@@ -1,0 +1,208 @@
+net
+{
+    node_size = (80 40);
+    HR_Desc = "";
+    HR_OOBN_CheckConsistency = "1";
+    HR_OOBN_FitExpand = "1";
+    HR_Zoom_ZoomFactor = "100";
+    HR_Groups_GroupColors = "";
+    HR_Groups_GroupNames = "";
+    HR_Groups_UserGroupsNo = "0";
+    HR_Color_Interface = "21";
+    HR_Color_Instance = "0";
+    HR_Color_DiscreteFunction = "5";
+    HR_Color_Function = "4";
+    HR_Color_Utility = "36";
+    HR_Color_Decision = "17";
+    HR_Color_ContinuousChance = "48";
+    HR_Color_DiscreteChance = "16";
+    HR_Monitor_InitSD = "2";
+    HR_Monitor_Utility_Arrange = "0";
+    HR_Monitor_Mean_Variance = "1";
+    HR_Monitor_Chance_Utility = "1";
+    HR_Monitor_InitStates = "5";
+    HR_Monitor_OpenGraph = "0";
+    HR_Monitor_GraphPrecision = "100";
+    HR_Monitor_AutoUpdGraph = "0";
+    HR_Compile_MaxMinimalSeparators = "100000";
+    HR_Compile_ApproxEpsilon = "1.0E-5";
+    HR_Compile_Approximate = "0";
+    HR_Compile_SaveToMemory = "0";
+    HR_Compile_Compress = "0";
+    HR_Compile_TriangMethod = "0";
+    HR_Propagate_AutoNormal = "1";
+    HR_Propagate_AutoSum = "1";
+    HR_Propagate_Auto = "1";
+    HR_Font_Italic = "0";
+    HR_Font_Weight = "400";
+    HR_Font_Size = "-12";
+    HR_Font_Name = "com.apple.laf.AquaFonts$DerivedUIResourceFont[family=Lucida Grande,name=Lucida Grande,style=plain,size=13]";
+    HR_Grid_GridShow = "0";
+    HR_Grid_GridSnap = "0";
+    HR_Grid_Y = "40";
+    HR_Grid_X = "40";
+}
+
+decision Treat
+{
+    label = "";
+    position = (483 524);
+    states = ("yes" "no");
+    HR_LinkMode = "[Cost:0][Sick_1:0]";
+    HR_Group = "0";
+    HR_Desc = "";
+    HR_State_1 = "";
+    HR_State_0 = "";
+}
+
+utility Cost
+{
+    label = "";
+    position = (483 619);
+    HR_Group = "0";
+    HR_Desc = "";
+}
+
+utility Harvest
+{
+    label = "";
+    position = (307 335);
+    HR_Group = "0";
+    HR_Desc = "";
+}
+
+node Losses_1
+{
+    label = "";
+    position = (428 343);
+    states = ("yes" "no");
+    HR_State_0 = "";
+    HR_State_1 = "";
+    HR_Desc = "";
+    HR_Group = "0";
+}
+
+node Dry_1
+{
+    label = "";
+    position = (501 451);
+    states = ("yes" "no");
+    HR_State_0 = "";
+    HR_State_1 = "";
+    HR_Desc = "";
+    HR_LinkMode = "[Losses:0][Losses_1:0]";
+    HR_Group = "0";
+}
+
+node Sick_1
+{
+    label = "";
+    position = (332 449);
+    states = ("yes" "no");
+    HR_LinkControlPoints = "";
+    HR_State_0 = "";
+    HR_State_1 = "";
+    HR_Desc = "";
+    HR_LinkMode = "[Losses:0][Harvest:0][Losses_1:0]";
+    HR_Group = "0";
+}
+
+node Losses_0
+{
+    label = "";
+    position = (192 450);
+    states = ("yes" "no");
+    HR_LinkControlPoints = "";
+    HR_LinkMode = "";
+    HR_Group = "0";
+    HR_Desc = "";
+    HR_State_1 = "";
+    HR_State_0 = "";
+}
+
+node Dry_0
+{
+    label = "";
+    position = (265 558);
+    states = ("yes" "no");
+    HR_LinkMode = "[Losses:0][Dry_1:0][Losses_0:0]";
+    HR_Group = "0";
+    HR_Desc = "";
+    HR_State_1 = "";
+    HR_State_0 = "";
+}
+
+node Sick_0
+{
+    label = "";
+    position = (96 556);
+    states = ("yes" "no");
+    HR_LinkMode = "[Losses:0][Sick_1:0][Losses_0:0]";
+    HR_Group = "0";
+    HR_Desc = "";
+    HR_State_1 = "";
+    HR_State_0 = "";
+}
+
+potential (Treat)
+{
+    data = ( 0.5 0.5 );
+}
+
+potential (Cost | Treat)
+{
+    data
+     = ( -8000	%  Treat=yes
+	 0 );	%  Treat=no
+}
+
+potential (Harvest | Sick_1)
+{
+    data
+     = ( 3000	%  Sick_1=yes
+	 20000 );	%  Sick_1=no
+}
+
+potential (Losses_1 | Dry_1 Sick_1)
+{
+    data
+     = ((( 0.95 0.05 )	%  Dry_1=yes  Sick_1=yes
+	 ( 0.85 0.15 ))	%  Dry_1=yes  Sick_1=no
+	(( 0.9 0.1 )	%  Dry_1=no  Sick_1=yes
+	 ( 0.02 0.98 )));	%  Dry_1=no  Sick_1=no
+}
+
+potential (Dry_1 | Dry_0)
+{
+    data
+     = (( 0.6 0.4 )	%  Dry_0=yes
+	( 0.05 0.95 ));	%  Dry_0=no
+}
+
+potential (Sick_1 | Treat Sick_0)
+{
+    data
+     = ((( 0.2 0.8 )	%  Treat=yes  Sick_0=yes
+	 ( 0.01 0.99 ))	%  Treat=yes  Sick_0=no
+	(( 0.99 0.01 )	%  Treat=no  Sick_0=yes
+	 ( 0.02 0.98 )));	%  Treat=no  Sick_0=no
+}
+
+potential (Losses_0 | Dry_0 Sick_0)
+{
+    data
+     = ((( 0.95 0.05 )	%  Dry_0=yes  Sick_0=yes
+	 ( 0.85 0.15 ))	%  Dry_0=yes  Sick_0=no
+	(( 0.9 0.1 )	%  Dry_0=no  Sick_0=yes
+	 ( 0.02 0.98 )));	%  Dry_0=no  Sick_0=no
+}
+
+potential (Dry_0)
+{
+    data = ( 0.1 0.9 );
+}
+
+potential (Sick_0)
+{
+    data = ( 0.1 0.9 );
+}

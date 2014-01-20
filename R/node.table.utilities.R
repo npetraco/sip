@@ -18,8 +18,7 @@ generateTableRowLevels<-function(levelInfoList){
   }
   
   #If it's not a prior node:
-  total.tbl<-NULL
-  
+  tmp.tbls<-rep(list(NULL), length(childLevels))
   for(i in 1:length(childLevels)){
     
     if(length(parentLevels)==1){
@@ -34,27 +33,32 @@ generateTableRowLevels<-function(levelInfoList){
       }
     }
     tbl <- matrix(omat, nrow=length(omat), ncol=1)
-    
-    #State row comes out as a concatenated string. Split it if there are more than two states
-    if(length(parentLevels)>1) {
-      tbl.tmp <- sapply(1:nrow(tbl),function(x){strsplit(tbl[x,], " ")}) #A hack to split the strings. Do a better way....
-      tbl <- array("xx",c(nrow(tbl), 2))
-      for(k in 1:length(tbl.tmp)){
-        tbl[k,] <- tbl.tmp[[k]]
-      }
-      #print(tbl)
-    }
-    
-    #Tack on the child levels, ie. child | parents
-    child.col<-rep(childLevels[i],nrow(tbl))
-    #print()
-    tbl<-cbind(child.col,tbl)
-    total.tbl<-rbind(total.tbl,tbl)
+    #print(tbl)
+    tmp.tbls[[i]] <- tbl
   }
+  
+  #print(tmp.tbls)
+  chunk.leng <- nrow(tmp.tbls[[1]])
+  offst <- length(tmp.tbls)
+  nrow.total <- ( offst * chunk.leng )
+  ncol.total <- length(unlist(strsplit(tmp.tbls[[1]][1,], " ")))
+  total.tbl <- array(-1.0, c(nrow.total, 1+ncol.total) )
+  #print(total.tbl)
+  
+  #Rearrange the rows to be in Hugin order. SMILE uses same order.
+  count<-1
+  for(i in 1:chunk.leng){ #loop over the rows of each sub table (one sub table for each child node)
+    for(j in 1:offst) {   #loop over the levels of the child node
+      trow <- c(childLevels[j], unlist(strsplit(tmp.tbls[[j]][i,], " ")) )
+      total.tbl[count, ] <- trow
+      count <- count + 1
+    }
+  }
+  
   colnames(total.tbl)<-nodeNames
   
   return(total.tbl)
-
+  
 }
 
 
@@ -120,7 +124,7 @@ get.table<-function(network.pointer, node.name){
 #Set the node table
 #If table is a CPT values are probs
 #--------------------------------------
-set.table<-function(network.pointer, node.name, values){
+set.table<-function(network.pointer, node.name, values, printQ=FALSE){
   
   #CHECK THAT NETWORK EXISTS
   if(is.nullptr(network.pointer)==T) {
@@ -140,8 +144,8 @@ set.table<-function(network.pointer, node.name, values){
     stop("Node type: ", nodetyp, " not supported.")
   }
   
-  #CHECK IF NODE IS A CHANCE NODE, THAT THE PROBS ADD TO 1 WHEN REQUIRED
-  
+  #CHECK THAT THE VECTOR OF VALUES TO ADD TO THE NODE ARE THE CORRECT LENGTH
+  check.node.values.length(network.pointer, node.name, values)
   
   #----
   if(nodetyp == "CPT") { #chance node
@@ -151,66 +155,43 @@ set.table<-function(network.pointer, node.name, values){
       stop("Assign numeric values for the node states!!")
     }
     
-    #CHECK PROBS ARE "COHERENT" FOR PRODUCTION
+    #CHECK PROBS THE RIGHT LENGTH AND ARE "COHERENT" FOR PRODUCTION
+    err.cod1 <- check.node.values.length(network.pointer, node.name, values)
+    if(err.cod1 == -1){
+      stop("Prob vector is the wrong length!!")
+    }
+    err.cod2 <- check.node.probs.coherence(network.pointer, node.name, values)
+    if(err.cod2 == -1){
+      stop("Found Incoherent Probs!!")
+    }
     
+    #Once past all of that, assign the values
     level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
     names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
     state.mat <- generateTableRowLevels(level.info)
     value <- SetNodeTable(network.pointer, node.name, values)
-    
   }
   if(nodetyp == "TABLE"){ #utility node
-    
     #NODE CHECK FOR NULL VALUES
     if(is.null(values)){
       stop("Assign numeric values for the node states!!")
     }
     
+    #CHECK UTILITIES ARE THE CORRECT LENGTH
+    err.cod1 <- check.node.values.length(network.pointer, node.name, values)
+    print(err.cod1)
+    if(err.cod1 == -1){
+      stop("Utility vector is the wrong length!!")
+    } 
+  
     level.info <- GetLevelsAssociatedWithUtilityNode(network.pointer, node.name)
     names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
     state.mat <- generateTableRowLevels(level.info)
     value <- SetNodeTable(network.pointer, node.name, values)
-    
-    #return(data.frame(value,state.mat))
-    
   }
   
-  
-  #----
-  
-  
-  
-  
-#   level.info <- GetLevelsAssociatedWithNode(network.pointer, node.name)
-#   #COUNT THE LEVELS TO GET THE STATE VECTORS RIGHT!!!!
-#   state.mat <- generateTableRowLevels(level.info)
-#   #print(state.mat)
-#   
-#   #Count the unique levels for each node involved. The first is the child.
-#   level.counts.vec <- sapply(1:ncol(state.mat),function(x){length(unique(state.mat[,x]))})
-#   #Get the state's indices of occurance in the column (node)
-#   level.idxs.list<-sapply(1:length(level.counts.vec),function(x){list(0:(level.counts.vec[x]-1))})
-#   
-#   #print(level.idxs.list)
-#   #Get the unique state names for each node. The child node is first
-#   state.level.names <- sapply(1:ncol(state.mat),function(x){list(unique(state.mat[,x]))})
-#   
-#   #print(state.level.names)
-#   
-#   #Translate each state name to its corresponding integer index. This (interger state vectors) 
-#   #is what SMILE needs to compute the unique index (row index) for each combination of states 
-#   state.idx.mat<-array(NA,dim(state.mat))
-#   for(i in 1:ncol(state.mat)){
-#     for(j in 1:length(state.level.names[[i]])){
-#       
-#       chg.idxs<-which(state.mat[,i] == state.level.names[[i]][j])
-#       state.idx.mat[chg.idxs,i] <- level.idxs.list[[i]][j]
-#     }
-#   }
-#   
-#   #SMILE expects the child node levels are the last column:
-#   state.idx.mat <- cbind(state.idx.mat[,2:ncol(state.idx.mat)], state.idx.mat[,1])
-#   
-#   print(state.idx.mat)
+  if(printQ==TRUE){
+    print(get.table(network.pointer, node.name))
+  }
   
 }

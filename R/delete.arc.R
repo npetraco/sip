@@ -13,7 +13,17 @@ delete.arc<-function(network.pointer, parent.node.name, child.node.name) {
     stop("Node: ",child.node.name, " Doesn't Exists!")
   }
   
-  #err.cod doesn't mean anything at this point NEED TO ADD SMILE ERROR-HANDLEING IN PRODUCTION
-  DeleteArc(network.pointer, parent.node.name, child.node.name)
+  #Delete the Arc
+  err.cod <- DeleteArc(network.pointer, parent.node.name, child.node.name)
+  
+  #Make sure everything went ok
+  if(err.cod<0){
+    #PRODUCTION ADD ERROR STRING HADLER HERE
+    stop("Something went wrong in DeleteArc:  ",dsl.error.info(network.pointer, err.cod))
+  }
+  
+  if(is.nullptr(network.pointer)==T) {
+    stop("Network Got Killed When Attempting To Delete Arc: ", node.name," !!")
+  }
   
 }

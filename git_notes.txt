@@ -68,4 +68,4 @@ HARD RESET OF LOCAL repo WITH remote repo
 git fetch --all
 git reset --hard origin/master
 
-git fetch downloads the latest from remote without trying to merge or rebase anything. Then the git reset resets the master branch to what you just fetched.
+git fetch downloads the latest from remote without trying to merge or rebase anything. Then the git reset resets the master branch to what you just fetched.(stackpverflow)

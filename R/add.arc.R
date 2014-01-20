@@ -13,7 +13,18 @@ add.arc<-function(network.pointer, parent.node.name, child.node.name) {
     stop("Node: ",child.node.name, " Doesn't Exists!")
   }
   
-  #err.cod doesn't mean anything at this point NEED TO ADD SMILE ERROR-HANDLEING IN PRODUCTION
+  #Add the Arc
   err.cod<-AddArc(network.pointer, parent.node.name, child.node.name)
+  
+  #Make sure everything went ok
+  if(err.cod<0){
+    #PRODUCTION ADD ERROR STRING HADLER HERE
+    stop("Something went wrong in AddArc. ", dsl.error.info(network.pointer, err.cod))
+  }
+  
+  if(is.nullptr(network.pointer)==T) {
+    stop("Network Got Killed When Attempting To Add Arc: ", node.name," !!")
+  }
+  
   
 }

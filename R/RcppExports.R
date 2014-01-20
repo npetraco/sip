@@ -18,15 +18,19 @@ CreateSmlieNetwork <- function() {
 }
 
 DeleteArc <- function(net_ptr, parent_node_name, child_node_name) {
-    invisible(.Call('sip_DeleteArc', PACKAGE = 'sip', net_ptr, parent_node_name, child_node_name))
+    .Call('sip_DeleteArc', PACKAGE = 'sip', net_ptr, parent_node_name, child_node_name)
 }
 
 DeleteNode <- function(net_ptr, node_name) {
-    invisible(.Call('sip_DeleteNode', PACKAGE = 'sip', net_ptr, node_name))
+    .Call('sip_DeleteNode', PACKAGE = 'sip', net_ptr, node_name)
 }
 
 ErrorCode2String <- function(error_code_) {
     .Call('sip_ErrorCode2String', PACKAGE = 'sip', error_code_)
+}
+
+ErrorMessages <- function(net_ptr) {
+    .Call('sip_ErrorMessages', PACKAGE = 'sip', net_ptr)
 }
 
 GetLevelsAssociatedWithChanceOrDecisionNode <- function(net_ptr, node_name) {
@@ -54,6 +58,6 @@ NodeExistsQ <- function(net_ptr, node_name) {
 }
 
 WriteNetwork <- function(net_ptr, filepath) {
-    invisible(.Call('sip_WriteNetwork', PACKAGE = 'sip', net_ptr, filepath))
+    .Call('sip_WriteNetwork', PACKAGE = 'sip', net_ptr, filepath)
 }
 

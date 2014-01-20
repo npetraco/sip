@@ -17,7 +17,7 @@ add.node<-function(network.pointer, node.name, node.type, node.levels=NULL) {
   
   #CHECK THAT IF UTILITY REQUESTED, NO or NULL LEVELS ARE GIVEN
   if(tolower(node.type)=="utility" & !is.null(node.levels) ) {
-    stop("Utility nodes dont get levels!")
+    stop("Utility nodes don't get levels!")
   }
   
   #CHECK THAT IF CHANCE OR DECISION IS REQUESTED LEVELS ARE GIVEN
@@ -30,10 +30,8 @@ add.node<-function(network.pointer, node.name, node.type, node.levels=NULL) {
   
   #Make sure everything went ok
   if(err.cod<0){
-    
     #PRODUCTION ADD ERROR STRING HADLER HERE
-    
-    stop("Something went wrong in AddNode. Check network pointer for problems!!!!!")
+    stop("Something went wrong in AddNode: ", dsl.error.info(network.pointer, err.cod))
   }
   
   if(is.nullptr(network.pointer)==T) {

@@ -51,13 +51,13 @@ int AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
   int node_handle = net_ptr_mod->AddNode( dsl_node_typ, CHAR(STRING_ELT(node_name,0)) ); //Convert node_name to required const char *
 
   //PRODUCTION: SHIFT THIS OVER TO THE R SIDE
-  cout<<"Added Node:  "<<CHAR(STRING_ELT(node_name,0))<<endl;
-  cout<<"Node handle: "<<node_handle<<endl;
+  //cout<<"Added Node:  "<<CHAR(STRING_ELT(node_name,0))<<endl;
+  //cout<<"Node handle: "<<node_handle<<endl;
   
   if(node_handle < 0){
-    cout<<"There is a problem with instantiating the node."<<endl;
-    cout<<"Execution for pointers out of order??"<<endl;
-    cout<<"node_handle is negative. Error code: " << node_handle << " Exiting!!!! "<<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
+    //cout<<"There is a problem with instantiating the node."<<endl;
+    //cout<<"Execution for pointers out of order??"<<endl;
+    //cout<<"node_handle is negative. Error code: " << node_handle << " Exiting!!!! "<<endl; //PUT IN PROPER ERROR HANDELING FOR PRODUCTION!
     return node_handle;
   }  
 
@@ -80,14 +80,14 @@ int AddNode(SEXP net_ptr, SEXP node_name, SEXP node_type, SEXP node_states) {
     //cout<< (const char*)node_states_cv[i] <<endl;
     errcod = someNames.Add(node_states_cv[i]); //Each CharacterVector elem can be cast into the required const char*
     if(errcod<0){
-      return errcod; //PRODUCTION ADD ERROR HANDLER
+      return errcod; //Should be a DSL error code
     }
   }
   
   //Think the return val for this (i.e. DSL_nodeDefinition::SetNumberOfOutcomes) is an ERROR CODE. 
   errcod = net_ptr_mod->GetNode( node_handle )->Definition()->SetNumberOfOutcomes(someNames);
   if(errcod<0){
-    return errcod; //PRODUCTION ADD ERROR HANDLER
+    return errcod; //Should be a DSL error code
   }
   
   return node_handle;  //Again, node_handle is the node index OR a DSL ERROR CODE if there was a problem.
