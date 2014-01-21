@@ -34,7 +34,7 @@ ErrorMessages <- function(net_ptr) {
 }
 
 NetworkInfo <- function(net_ptr) {
-    invisible(.Call('sip_NetworkInfo', PACKAGE = 'sip', net_ptr))
+    .Call('sip_NetworkInfo', PACKAGE = 'sip', net_ptr)
 }
 
 GetLevelsAssociatedWithChanceOrDecisionNode <- function(net_ptr, node_name) {
