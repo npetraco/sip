@@ -16,8 +16,24 @@ network.info<-function(network.pointer) {
   net.info[[3]][utility.nodes] <- "utility"
   net.info[[3]][decision.nodes] <- "decision"
   
-  node.info <- cbind(net.info[[2]], net.info[[3]])
-  colnames(node.info) <- c("node.name","node.type")
+  node.info <- cbind(net.info[[2]], net.info[[3]], net.info[[4]])
+  
+  #print(net.info[[5]])
+  
+  #print(paste(net.info[[2]][[x]], net.info[[2]][ net.info[[5]][[x]] ]))
+  edgelist<-NULL
+  #print(net.info$number.of.nodes)
+   for(i in 1:net.info$number.of.nodes){
+     child.idxs<-net.info[[5]][[i]]
+     print(child.idxs)
+     if(length(child.idxs)>0){
+       #print(net.info$node.names)
+       print(net.info$node.names[ child.idxs ])
+     }
+   }
+  
+  
+  colnames(node.info) <- c("node.name","node.type", "num.node.children")
   net.info2 <- list(net.info[[1]], node.info)
   names(net.info2) <- c("number.of.nodes", "node.info")
   

@@ -15,25 +15,35 @@ List NetworkInfo(SEXP net_ptr) { //Return a List. Clean it up on the R side
   
   std::vector<std::string> nodeNames(numNodes);
   std::vector<std::string> nodeTypes(numNodes);
+  std::vector<DSL_intArray> childHandleVec(numNodes);
+  std::vector<int> childCountVec(numNodes, 0);
+  
+  List edgelist(numNodes);
+  
   for(int i = 0; i < numNodes; i++){
-    //DSL_node *childNode = net_ptr_mod->GetNode(i);
-    //std::string childNodeName = childNode->Info().Header().GetName();
-    //const char * nodeType = childNode->Definition()->GetTypeName();
-    //std::string nodeType_s = nodeType;
-    //nodeNames.at(i) = childNodeName;
-    //nodeTypes.at(i) = nodeType_s;
-
+    
     nodeNames[i] = net_ptr_mod->GetNode(i)->Info().Header().GetName();
     nodeTypes[i] = net_ptr_mod->GetNode(i)->Definition()->GetTypeName();
-    //cout << typeid(net_ptr_mod->GetNode(i)->Info().Header().GetName()).name() << endl;
-    //cout << typeid(net_ptr_mod->GetNode(i)->Definition()->GetTypeName()).name() << endl;
+    
+    childHandleVec[i] = net_ptr_mod->GetChildren(i);            //Handles of node's children
+    childCountVec[i] =  net_ptr_mod->GetChildren(i).NumItems(); //Number of children for node i
+    
+    IntegerVector tmp(childCountVec[i]);
+    for(int j = 0; j < childCountVec[i]; j++){
+      int chidx = 1+childHandleVec[i][j];      //Index (NOT HANDLE) of a node's child
+      //cout << "Node#: " << i+1 << " "<<nodeNames[i] <<". Child " << j+1 <<" node# is: " << chidx+1 << " " << nodeNames[chidx] << endl;
+      tmp[j] = chidx;
+    }
+    edgelist[i] = tmp;
   }
-
+  
   Rcpp::List nodeInfo = 
       List::create(
           numNodes,
           nodeNames,
-          nodeTypes
+          nodeTypes,
+          childCountVec,
+          edgelist
       );
          
   return wrap(nodeInfo);
