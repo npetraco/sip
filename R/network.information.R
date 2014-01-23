@@ -18,32 +18,28 @@ network.info<-function(network.pointer) {
   
   node.info <- cbind(net.info[[2]], net.info[[3]], net.info[[4]])
   
-  #print(net.info[[5]])
-  
-  #print(paste(net.info[[2]][[x]], net.info[[2]][ net.info[[5]][[x]] ]))
   edgelist<-NULL
-  #print(net.info$number.of.nodes)
    for(i in 1:net.info$number.of.nodes){
      child.idxs<-net.info[[5]][[i]]
-     print(child.idxs)
+    
      if(length(child.idxs)>0){
-       #print(net.info$node.names)
-       print(net.info$node.names[ child.idxs ])
+       
+       parent.node.name <- net.info[[2]][[i]]
+       elv.tmp <- strsplit(paste(parent.node.name, net.info$node.names[ child.idxs ]), " ")
+       
+       elm.tmp <- t(sapply(1:length(elv.tmp), function(x){elv.tmp[[x]]}))
+       edgelist<-rbind(edgelist, elm.tmp)
      }
    }
   
-  
   colnames(node.info) <- c("node.name","node.type", "num.node.children")
-  net.info2 <- list(net.info[[1]], node.info)
-  names(net.info2) <- c("number.of.nodes", "node.info")
-  
-  print(net.info2)
-  #print(chance.nodes)
-  #print(utility.nodes)
-  #print(decision.nodes)
-    
+  net.info2 <- list(net.info[[1]], node.info, edgelist)
+  names(net.info2) <- c("number.of.nodes", "node.info", "arcs")
+      
   if(is.nullptr(network.pointer)==T) {
     stop("Network Got Killed When Attempting To Query Its Info: ", node.name," !!")
   }
+  
+  return(net.info2)
   
 }
