@@ -45,6 +45,10 @@ GetLevelsAssociatedWithUtilityNode <- function(net_ptr, node_name) {
     .Call('sip_GetLevelsAssociatedWithUtilityNode', PACKAGE = 'sip', net_ptr, node_name)
 }
 
+GetChanceOrUtilityNodeStateCoords <- function(net_ptr, node_name) {
+    .Call('sip_GetChanceOrUtilityNodeStateCoords', PACKAGE = 'sip', net_ptr, node_name)
+}
+
 GetNodeTable <- function(net_ptr, node_name) {
     .Call('sip_GetNodeTable', PACKAGE = 'sip', net_ptr, node_name)
 }

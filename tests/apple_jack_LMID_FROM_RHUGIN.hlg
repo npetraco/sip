@@ -1,0 +1,125 @@
+Thu Jan 23 21:15:00 2014
+
+
+Moral links:
+
+    Marrying Sick1 and Dry1
+    Marrying Sick and Dry
+    Marrying Sick and Treat
+
+
+Triangulating prime component with 3 members:
+    Loses1, Dry1, Sick1
+This component is a clique of cost 8
+
+Triangulating prime component with 6 members:
+    Treat, Dry1, Sick1, Loses, Dry, Sick
+
+    Using the best greedy heuristic for triangulation
+
+
+
+Total cost of triangulation for all prime components is 48
+
+
+Elimination sequence:
+
+    Treat
+    Sick
+    Loses
+    Dry
+    Loses1
+    Dry1
+    Sick1
+
+
+Cliques:
+
+Clique 4, 3 members, table size = 8:
+    Sick1, Dry1, Loses1
+
+Clique 3, 3 members, table size = 8:
+    Sick1, Dry1, Dry
+
+Clique 2, 4 members, table size = 16:
+    Sick1, Dry, Loses, Sick
+
+Clique 1, 4 members, table size = 16:
+    Sick1, Loses, Sick, Treat
+
+Total clique table size: 48
+
+
+The junction forest:
+
+Creating junction tree with clique 4 as root ...
+
+Cliques 3 and 4 linked, separator has 2 members and table size = 4:
+    Sick1, Dry1
+
+Cliques 2 and 3 linked, separator has 2 members and table size = 4:
+    Sick1, Dry
+
+Cliques 1 and 2 linked, separator has 3 members and table size = 8:
+    Sick1, Loses, Sick
+
+
+Assignment of potentials to cliques:
+
+    Node Profit assigned to clique 1
+    Node Treat assigned to clique 1
+    Node Harv assigned to clique 4
+    Node Loses1 assigned to clique 4
+    Node Dry1 assigned to clique 3
+    Node Sick1 assigned to clique 1
+    Node Loses assigned to clique 2
+    Node Dry assigned to clique 3
+    Node Sick assigned to clique 2
+
+
+Checking conditional probability potentials:
+
+    No error found
+
+
+Beliefs (and expected utilities) for decision nodes:
+
+    Treat:
+	treat      0.5 (11507)
+	not        0.5 (18011)
+
+
+Beliefs (and expected utilities) for chance nodes:
+
+    Loses1:
+	yes        0.165411 (10057.5)
+	no         0.834589 (15690.8)
+
+    Dry1:
+	yes        0.105 (14759)
+	no         0.895 (14759)
+
+    Sick1:
+	yes        0.073 (1410.96)
+	no         0.927 (15810.1)
+
+    Loses:
+	yes        0.1832 (10874.2)
+	no         0.8168 (15630.3)
+
+    Dry:
+	yes        0.1 (14759)
+	no         0.9 (14759)
+
+    Sick:
+	yes        0.1 (5885)
+	no         0.9 (15745)
+
+
+Expected utilities for utility nodes:
+
+    Profit: -4000
+
+    Harv: 18759
+
+Overall expected utility: 14759

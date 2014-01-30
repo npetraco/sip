@@ -2,8 +2,77 @@
 #Assemble CPT, (or other table) levels (characters)
 #into a Hugin-like CPT table
 #--------------------------------------
-generateTableRowLevels<-function(network.pointer, node.name){
-   
+generateTableRowLevels<-function(levelInfoList){
+  
+  nodeNames <- levelInfoList$Names #Child, Parent 1, Parent 2, etc. See API for info on parent order.
+  levelLists <- levelInfoList$Levels
+  childLevels <- levelLists[[1]]
+  parentLevels <- levelLists[-1]
+  
+  #If it's a prior node:
+  if(length(levelLists) == 1){
+    total.tbl = matrix(levelLists[[1]], nrow=length(childLevels), ncol=1)
+    colnames(total.tbl)<-nodeNames
+    
+    return(total.tbl)
+  }
+  
+  #BROKEN!!!!!
+  #NODE ORDER IS NOT GAURANTEED TO MATCH SMILE!!!!!!
+  #NEED FUNCTION TO GET ALL STATE COORDINATES FROM SMILE
+  
+  #If it's not a prior node:
+  tmp.tbls<-rep(list(NULL), length(childLevels))
+  for(i in 1:length(childLevels)){
+    
+    if(length(parentLevels)==1){
+      omat <- parentLevels[[1]]
+    } else {
+      omat <- outer(parentLevels[[1]],parentLevels[[2]], FUN=paste)
+    }
+    
+    if(length(parentLevels)>2){
+      for(j in 3:length(parentLevels)){
+        omat <- outer(omat, parentLevels[[j]], FUN=paste)
+      }
+    }
+    tbl <- matrix(omat, nrow=length(omat), ncol=1)
+    #print(tbl)
+    tmp.tbls[[i]] <- tbl
+  }
+  
+  #print(tmp.tbls)
+  chunk.leng <- nrow(tmp.tbls[[1]])
+  offst <- length(tmp.tbls)
+  nrow.total <- ( offst * chunk.leng )
+  ncol.total <- length(unlist(strsplit(tmp.tbls[[1]][1,], " ")))
+  total.tbl <- array(-1.0, c(nrow.total, 1+ncol.total) )
+  #print(total.tbl)
+  
+  #Rearrange the rows to be in Hugin order. SMILE uses same order.
+  count<-1
+  for(i in 1:chunk.leng){ #loop over the rows of each sub table (one sub table for each child node)
+    for(j in 1:offst) {   #loop over the levels of the child node
+      trow <- c(childLevels[j], unlist(strsplit(tmp.tbls[[j]][i,], " ")) )
+      total.tbl[count, ] <- trow
+      count <- count + 1
+    }
+  }
+  
+  colnames(total.tbl)<-nodeNames
+  
+  return(total.tbl)
+  
+}
+
+
+#--------------------------------------
+# FIX for above????????
+#--------------------------------------
+
+generateTableRowLevels2<-function(network.pointer, node.name){
+  
+  
   #CHECK THAT NETWORK EXISTS
   if(is.nullptr(network.pointer)==T) {
     stop("Network Doesn't Exist!!")
@@ -48,7 +117,10 @@ generateTableRowLevels<-function(network.pointer, node.name){
     return(total.tbl)
   }
   
-  #If it's not a prior node
+  #BROKEN!!!!!
+  #NODE ORDER IS NOT GAURANTEED TO MATCH SMILE!!!!!!
+  #NEED FUNCTION TO GET ALL STATE COORDINATES FROM SMILE
+
   if(nodetyp == "CPT"){ #chance node
     
     state.coords.mat <- GetChanceOrUtilityNodeStateCoords(network.pointer, node.name)
@@ -60,22 +132,25 @@ generateTableRowLevels<-function(network.pointer, node.name){
         
   }
   
-  #Put the child column first:
+  
   state.coords.mat <- cbind( state.coords.mat[,ncol(state.coords.mat)], state.coords.mat[,-ncol(state.coords.mat)] )
   colnames(state.coords.mat) <- nodeNames
+  print(state.coords.mat)
   
-  #child (first column)
   state.level.mat <- NULL
   tmp.col <- sapply(1:nrow(state.coords.mat), function(x){childLevels[1+state.coords.mat[x,1]]})
   state.level.mat <- cbind(state.level.mat, tmp.col )
-  #parent columns (the rest)
+  #print(nodeNames)
+  #print(childLevels)
   for(i in 1:length(parentLevels)) {
     tmp.col <- sapply(1:nrow(state.coords.mat), function(x){parentLevels[[i]][1+state.coords.mat[x,i+1]]})
     state.level.mat <- cbind(state.level.mat, tmp.col )
   }
   colnames(state.level.mat) <- nodeNames
+  print(state.level.mat)
+  #print(parentLevels)
   
-  return(state.level.mat)
+#   return(total.tbl)
   
 }
 
@@ -103,22 +178,22 @@ get.table<-function(network.pointer, node.name){
     stop("Node type: ", nodetyp, " not supported.")
   }
   
-#   if(nodetyp == "LIST"){ #decision node
-#     
-#     #level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
-#     #names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names 
-#     
-#     state.mat <- generateTableRowLevels(network.pointer, node.name)
-#     #print(state.mat)
-#     #GetDecisionNodeTable(network.pointer, node.name)
-#     return(data.frame(state.mat))
-#     
-#   }
+  if(nodetyp == "LIST"){ #decision node
+    
+    level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
+    names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names 
+    
+    state.mat <- generateTableRowLevels(level.info)
+    #print(state.mat)
+    #GetDecisionNodeTable(network.pointer, node.name)
+    return(data.frame(state.mat))
+    
+  }
   if(nodetyp == "CPT") { #chance node
     
-    #level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
-    #names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
-    state.mat <- generateTableRowLevels(network.pointer, node.name)
+    level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
+    names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
+    state.mat <- generateTableRowLevels(level.info)
     value <- GetNodeTable(network.pointer, node.name)
     
     #print(state.mat)
@@ -127,9 +202,9 @@ get.table<-function(network.pointer, node.name){
   }
   if(nodetyp == "TABLE"){ #utility node
     
-    #level.info <- GetLevelsAssociatedWithUtilityNode(network.pointer, node.name)
-    #names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
-    state.mat <- generateTableRowLevels(network.pointer, node.name)
+    level.info <- GetLevelsAssociatedWithUtilityNode(network.pointer, node.name)
+    names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
+    state.mat <- generateTableRowLevels(level.info)
     value <- GetNodeTable(network.pointer, node.name)
     
     return(data.frame(value,state.mat))

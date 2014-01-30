@@ -1,4 +1,5 @@
 library(sip)
+detach("package:sip", unload=TRUE)
 #library(gRbase)
 
 #We want an graphNEL to SMILE newtwork function

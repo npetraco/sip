@@ -178,6 +178,22 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// GetChanceOrUtilityNodeStateCoords
+IntegerMatrix GetChanceOrUtilityNodeStateCoords(SEXP net_ptr, SEXP node_name);
+RcppExport SEXP sip_GetChanceOrUtilityNodeStateCoords(SEXP net_ptrSEXP, SEXP node_nameSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        SEXP net_ptr = Rcpp::as<SEXP >(net_ptrSEXP);
+        SEXP node_name = Rcpp::as<SEXP >(node_nameSEXP);
+        IntegerMatrix __result = GetChanceOrUtilityNodeStateCoords(net_ptr, node_name);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // GetNodeTable
 NumericVector GetNodeTable(SEXP net_ptr, SEXP node_name);
 RcppExport SEXP sip_GetNodeTable(SEXP net_ptrSEXP, SEXP node_nameSEXP) {

@@ -1,4 +1,5 @@
 library(RHugin)
+detach("package:RHugin", unload=TRUE)
 
 limid <- hugin.domain()
 
@@ -81,3 +82,5 @@ get.utility(limid, "Treat")
 
 get.belief(limid, "Sick")
 get.belief(limid, "Dry")
+
+write.rhd(limid, "/Users/npetraco/codes/R/sip/tests/apple_jack_LMID_FROM_RHUGIN.net", type = "net")

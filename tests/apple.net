@@ -7,14 +7,14 @@ node SICK
 {
     label = "SICK";
     position = (0 0);
-    states = ("sick"  "not_sick");
+    states = ("yes"  "no");
 }
 
 node DRY
 {
     label = "DRY";
     position = (0 0);
-    states = ("dry"  "not_dry");
+    states = ("yes"  "no");
 }
 
 node LOSES
@@ -28,21 +28,21 @@ decision TREAT
 {
     label = "TREAT";
     position = (0 0);
-    states = ("treat"  "dont_treat");
+    states = ("treat"  "not");
 }
 
 node SICKp
 {
     label = "SICKp";
     position = (0 0);
-    states = ("sick"  "not_sick");
+    states = ("yes"  "no");
 }
 
 node DRYp
 {
     label = "DRYp";
     position = (0 0);
-    states = ("dry"  "not_dry");
+    states = ("yes"  "no");
 }
 
 node LOSESp
@@ -82,7 +82,7 @@ potential (LOSES | SICK DRY)
         (0.02000000 0.98000000)));
 }
 
-potential (TREAT |)
+potential (TREAT | LOSES)
 {
 }
 

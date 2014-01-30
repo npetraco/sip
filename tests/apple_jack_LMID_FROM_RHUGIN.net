@@ -1,0 +1,116 @@
+net
+{
+    node_size = (0 0);
+}
+
+utility Profit
+{
+    position = (275 142);
+}
+
+decision Treat
+{
+    position = (228 252);
+    states = ("treat" "not");
+}
+
+utility Harv
+{
+    position = (75 33);
+}
+
+node Loses1
+{
+    position = (350 33);
+    states = ("yes" "no");
+}
+
+node Dry1
+{
+    position = (428 252);
+    states = ("yes" "no");
+}
+
+node Sick1
+{
+    position = (75 142);
+    states = ("yes" "no");
+}
+
+node Loses
+{
+    position = (228 361);
+    states = ("yes" "no");
+}
+
+node Dry
+{
+    position = (370 470);
+    states = ("yes" "no");
+}
+
+node Sick
+{
+    position = (139 470);
+    states = ("yes" "no");
+}
+
+potential (Profit | Treat)
+{
+    data
+     = ( -8000	%  Treat=treat
+	 0 );	%  Treat=not
+}
+
+potential (Treat | Loses) {}
+
+potential (Harv | Sick1)
+{
+    data
+     = ( 3000	%  Sick1=yes
+	 20000 );	%  Sick1=no
+}
+
+potential (Loses1 | Dry1 Sick1)
+{
+    data
+     = ((( 0.95 0.05 )	%  Dry1=yes  Sick1=yes
+	 ( 0.85 0.15 ))	%  Dry1=yes  Sick1=no
+	(( 0.9 0.1 )	%  Dry1=no  Sick1=yes
+	 ( 0.02 0.98 )));	%  Dry1=no  Sick1=no
+}
+
+potential (Dry1 | Dry)
+{
+    data
+     = (( 0.6 0.4 )	%  Dry=yes
+	( 0.05 0.95 ));	%  Dry=no
+}
+
+potential (Sick1 | Treat Sick)
+{
+    data
+     = ((( 0.2 0.8 )	%  Treat=treat  Sick=yes
+	 ( 0.01 0.99 ))	%  Treat=treat  Sick=no
+	(( 0.99 0.01 )	%  Treat=not  Sick=yes
+	 ( 0.02 0.98 )));	%  Treat=not  Sick=no
+}
+
+potential (Loses | Dry Sick)
+{
+    data
+     = ((( 0.95 0.05 )	%  Dry=yes  Sick=yes
+	 ( 0.85 0.15 ))	%  Dry=yes  Sick=no
+	(( 0.9 0.1 )	%  Dry=no  Sick=yes
+	 ( 0.02 0.98 )));	%  Dry=no  Sick=no
+}
+
+potential (Dry)
+{
+    data = ( 0.1 0.9 );
+}
+
+potential (Sick)
+{
+    data = ( 0.1 0.9 );
+}

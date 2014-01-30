@@ -120,6 +120,94 @@ List GetLevelsAssociatedWithUtilityNode(SEXP net_ptr, SEXP node_name) {
  
 }
 
+/*===================================================*/
+/* Chance or Utility Node state coordinates*/
+/*===================================================*/
+
+// [[Rcpp::export]]
+IntegerMatrix GetChanceOrUtilityNodeStateCoords(SEXP net_ptr, SEXP node_name) {
+  
+  //"as" the pointer sent in into a Rcpp Xptr, i.e. a smart (Rcpp) pointer to the network
+  Rcpp::XPtr<DSL_network> netx(net_ptr);
+  
+  int node_handle = netx->FindNode( CHAR(STRING_ELT(node_name,0)) );
+  DSL_node *childNode = netx->GetNode(node_handle);                    //Pointer to the child node object
+  
+  //Node type for use with decision/utility node handleing below
+  const char * nodeType = childNode->Definition()->GetTypeName();
+  std::string nodeType_s = nodeType;
+  
+  //If node is chance, it has levels. 
+  int childNumLevels = 0;
+  if( nodeType_s == "CPT"){
+    //We want to count the node levels and the node's parent levels
+    childNumLevels = childNode->Definition()->GetNumberOfOutcomes(); //Number of levels for the child (Outcomes)
+  }
+  
+  //We want the same level count info for the parent nodes:
+  DSL_intArray parent_handles = netx->GetParents(node_handle);         //Get Parent handles
+  int numParents =  parent_handles.NumItems();                         //Number of parent nodes
+  
+  //Container to hold the number of levels.
+  //CAREFUL. Don't take decision nodes into account. DO THAT ON THE R SIDE!!!!!!!
+  std::vector<int> levelCounts(1);
+  if( nodeType_s == "CPT"){                  //For chance node
+    levelCounts.resize(1+numParents);
+    levelCounts[0] = childNumLevels;
+  }
+  if( nodeType_s == "TABLE"){               //For utility node
+    levelCounts.resize(numParents);
+  }
+      
+  //Loop over the parent nodes and extract level counts:
+  for(int i = 0; i < numParents; i++){         
+    DSL_node *aParentNode = netx->GetNode( parent_handles.Subscript(i) );  //Grab a parent node
+    
+    int parentNumLevels = aParentNode->Definition()->GetNumberOfOutcomes();//Number of levels (Outcomes)
+
+    if( nodeType_s == "CPT"){             //For chance node
+      levelCounts[i+1] = parentNumLevels;
+    }
+    if( nodeType_s == "TABLE"){          //For utility node
+      levelCounts[i] = parentNumLevels;
+    }
+    
+  }
+  
+  //Get the indices of each combination of the levels (states):
+  int numCoordinates = levelCounts.size();        //Number of coordinates in a state
+  DSL_intArray theCoordinates(numCoordinates);    //Declare a DSL_intArray to hold the state
+  //printIntArray(theCoordinates.Items(), numCoordinates);  
+
+  //Declare a node table (cpt for a chance node) and fill it up
+  DSL_Dmatrix *theCpt;
+  netx->GetNode(node_handle)->Definition()->GetDefinition(&theCpt);  
+  int numStates = theCpt->GetItems().GetSize();
+
+  IntegerMatrix stateMat(numStates, numCoordinates);
+  for(int i = 0; i < numStates; i++){
+    theCpt->IndexToCoordinates(i, theCoordinates);
+    //cout << "State " << i << " " <<endl;
+    for(int j = 0; j < numCoordinates; j++) {
+      stateMat(i,j) = theCoordinates.Items()[j];
+    }
+    //printIntArray(theCoordinates.Items(), numCoordinates);
+    //cout << "==========" << endl;
+  }
+  
+
+//  double *darray = theCpt->GetItems().Items();       //Grab the doubles array of the DSL_Matrix 
+//  NumericVector darray_nv(numStates);
+//  
+//  for(int i = 0; i < numStates; i++){
+//    darray_nv[i] = darray[i];
+//  }
+  
+  return(wrap(stateMat));
+
+
+}
+
 
 /*===================================================*/
 /*Get the doubles table for chance and utility nodes */

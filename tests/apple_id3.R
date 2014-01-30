@@ -28,6 +28,7 @@ add.arc(np, "TREAT", "COST")
 add.arc(np, "SICKp", "HARV")
 add.arc(np, "TREAT","SICKp")
 
+show.network(np)
 
 get.table(np,"SICK")
 set.table(np,"SICK",c(0.1, 0.9),printQ=TRUE)
