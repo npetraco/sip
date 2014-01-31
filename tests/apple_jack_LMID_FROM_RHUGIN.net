@@ -62,7 +62,12 @@ potential (Profit | Treat)
 	 0 );	%  Treat=not
 }
 
-potential (Treat | Loses) {}
+potential (Treat | Loses)
+{
+    data
+     = (( 0.5 0.5 )  %  Loses=yes
+	( 0.05 0.05 ));	%  Loses=no
+}
 
 potential (Harv | Sick1)
 {

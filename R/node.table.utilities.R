@@ -103,17 +103,10 @@ get.table<-function(network.pointer, node.name){
     stop("Node type: ", nodetyp, " not supported.")
   }
   
-#   if(nodetyp == "LIST"){ #decision node
-#     
-#     #level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
-#     #names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names 
-#     
-#     state.mat <- generateTableRowLevels(network.pointer, node.name)
-#     #print(state.mat)
-#     #GetDecisionNodeTable(network.pointer, node.name)
-#     return(data.frame(state.mat))
-#     
-#   }
+  if(nodetyp == "LIST"){ #decision node
+    stop("Decision nodes don't have tables!")    
+  }
+  
   if(nodetyp == "CPT") { #chance node
     
     #level.info <- GetLevelsAssociatedWithChanceOrDecisionNode(network.pointer, node.name)
@@ -126,6 +119,8 @@ get.table<-function(network.pointer, node.name){
     return(data.frame(value,state.mat))
   }
   if(nodetyp == "TABLE"){ #utility node
+    
+    #BROKEN!!!!!!!!!!
     
     #level.info <- GetLevelsAssociatedWithUtilityNode(network.pointer, node.name)
     #names(level.info)<-c("Names", "Levels") #Necessary to do this bec having trouble with dyn.load-ing Rcpp compiled code using Rcpp::Names
